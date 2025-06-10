@@ -1,0 +1,23 @@
+services:
+  db:
+    build: backend/postgis/17-master
+    restart: unless-stopped
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=explorintator
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  marvin:
+    image: ghcr.io/maplibre/martin
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/explorintator
+    # volumes:
+    #   - ./data/marvin/config:/config
+    # command: --config /config/config.yml
+    depends_on:
+      - db
