@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Viewer } from './viewer';
+import { DistanceFilterComponent } from './distance-filter.component';
 
-describe('Viewer', () => {
-  let component: Viewer;
-  let fixture: ComponentFixture<Viewer>;
+describe('DistanceFilterComponent', () => {
+  let component: DistanceFilterComponent;
+  let fixture: ComponentFixture<DistanceFilterComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Viewer]
+      imports: [DistanceFilterComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Viewer);
+    fixture = TestBed.createComponent(DistanceFilterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

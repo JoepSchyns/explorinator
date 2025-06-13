@@ -1,0 +1,5 @@
+<mat-button-toggle-group name="fontStyle" aria-label="Font Style" (change)="updateFilter($event.value)" [value]="viewerStore.filters().loop">
+    @for(value of LOOP_FILTER_VALUES; track value){
+        <mat-button-toggle [value]="value">{{loopFilterValueToHumanReadable(value)}}</mat-button-toggle>
+    }
+</mat-button-toggle-group>

@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
-import { Viewer } from './viewer/viewer';
+import { MapViewComponent } from './map-view/map-view.component';
 
 export const routes: Routes = [
     {
         path: '',
-        component: Viewer
+        component: MapViewComponent
     }
 ];

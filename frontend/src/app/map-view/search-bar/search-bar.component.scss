@@ -1,0 +1,12 @@
+:host ::ng-deep {
+    .mat-mdc-text-field-wrapper{
+        border-radius: 2rem;
+        padding: 0 1rem!important;
+
+        .mdc-line-ripple{
+            &::after, &::before {
+                border-style: none;
+            }
+        }
+    }
+}

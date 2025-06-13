@@ -25,14 +25,4 @@ export class MartinService {
   getTileNames() {
     return this.http.get<MartinCatalog>(environment.marvinBaseUrl + '/catalog').pipe(map((c) => Object.keys(c.tiles)));
   }
-
-  getTileUrl(tileNames?: string[]){
-    if(!tileNames){
-      return this.getTileNames().pipe(map(names =>{
-        return environment.marvinBaseUrl + '/' + names.join(',');
-      }));
-    }
-
-    return of(environment.marvinBaseUrl + '/' +  tileNames?.join(','));
-  }
 }
