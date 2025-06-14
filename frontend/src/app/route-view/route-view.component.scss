@@ -1,0 +1,14 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    app-viewer{
+        height: 35vh;
+        display: block;
+        margin-bottom: calc(-1 * var(--mat-card-outlined-container-shape, var(--mat-sys-corner-medium)));
+    }
+    mat-card{
+        flex: 1; /* This item will grow to fill available space */
+        overflow-y: auto; /* Add scroll if content overflows */
+    }
+}

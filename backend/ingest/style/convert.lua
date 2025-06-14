@@ -1,14 +1,14 @@
 local routes =  osm2pgsql.define_table({
     name = 'routes',
     -- Define a composite primary key using both osm_id and osm_type
-    ids = { type = 'any', id_column = 'osm_id', type_column = 'osm_type' },
+    ids = { type = 'any', id_column = 'id', type_column = 'type' },
     columns = {
         { column = 'name', type = 'text' },
         { column = 'ascent_m', type = 'real' },
         { column = 'descent_m', type = 'real' },
         { column = 'description', type = 'text' },
         { column = 'distance_m', type = 'real' },
-        { column = 'colour', type = 'text' },
+        { column = 'color', type = 'text' },
         { column = 'from', type = 'text' },
         { column = 'osmc_symbol', type = 'text' },
         { column = 'roundtrip', type = 'text' },
@@ -77,12 +77,14 @@ function osm2pgsql.process_relation(object)
         description = tags.description,
         distance_m = parseValueToMeters(tags.distance, 'km'),
         from = tags.from,
-        osmc_symbol = tags['osmc:symbol'],
+        symbol = tags['osmc:symbol'],
         roundtrip = tags.roundtrip,
         to = tags.to,
         website = tags.website,
-        colour = tags.colour,
+        color = tags.colour,
         geom = object:as_multilinestring(),
+        id= tags.osm_id,
+        type= tags.osm_type
     }
     routes:insert(route)
 end

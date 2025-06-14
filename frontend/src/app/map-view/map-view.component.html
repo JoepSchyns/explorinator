@@ -1,2 +1,2 @@
-<app-search-bar />
-<app-viewer />
+<app-search-bar (viewerStore)="viewerStore" />
+<app-viewer (routesClicked)="openRoutesBottomSheet($event)" (viewerStore)="viewerStore"/>

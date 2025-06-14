@@ -1,7 +1,7 @@
-import { Component, effect, ElementRef, inject, untracked, ViewChild } from '@angular/core';
-import { GeolocateControl, Map, MapGeoJSONFeature, MapMouseEvent, MapTouchEvent, NavigationControl, Popup } from 'maplibre-gl';
-import { ViewerStore } from '../../stores/viewer.store';
-import { environment } from '../../../environments/environment';
+import { Component, effect, ElementRef, inject, Input, output, untracked, ViewChild } from '@angular/core';
+import { GeolocateControl, Map, MapGeoJSONFeature, MapMouseEvent, NavigationControl } from 'maplibre-gl';
+import { RouteMeta, ViewerStore } from '../stores/viewer.store';
+import { environment } from '../../environments/environment';
 
 
 @Component({
@@ -10,10 +10,12 @@ import { environment } from '../../../environments/environment';
   templateUrl: './viewer.component.html',
   styleUrl: './viewer.component.scss'
 })
-export class Viewer {
+export class ViewerComponent {
   @ViewChild('map') private mapContainer!: ElementRef<HTMLElement>;
   private map: Map | undefined;
   private viewerStore = inject(ViewerStore)
+  routesClickedOutput = output<RouteMeta[]>({alias: 'routesClicked'});
+  @Input() enableClick = true;
   
   constructor() {
     effect(() => {
@@ -44,11 +46,7 @@ export class Viewer {
 
   private showInfoOnClick(layerName: string) {
     this.addClickEventToLayer(layerName, (e) => {
-      const description = JSON.stringify(e.features!.reduce((acc, f, index) => ({ [index]: f.properties, ...acc }), {}), null, 4);
-      new Popup()
-        .setLngLat(e.lngLat)
-        .setHTML(`<pre>${description}</pre>`)
-        .addTo(this.map!);
+      this.routesClickedOutput.emit(e.features!.map(f => f.properties) as RouteMeta[]);
     });
   }
 
@@ -94,7 +92,7 @@ export class Viewer {
       this.map!.addSource(this.tracksMaplibreSourceId, {
         type: 'vector',
         url: tileUrl,
-        promoteId: 'osm_id',
+        promoteId: 'id',
       });
 
       
@@ -110,11 +108,11 @@ export class Viewer {
         paint: {
           'line-color': [
             'case',
-            ['to-boolean', ['get', 'colour']],
-            ['get', 'colour'],
+            ['to-boolean', ['get', 'color']],
+            ['get', 'color'],
             ['concat',
             'hsl(',
-            ["abs", ['%', ['get', 'osm_id'], 360]],
+            ["abs", ['%', ['get', 'id'], 360]],
             ',100%, 30%)']
           ],
           'line-width': [
@@ -136,7 +134,6 @@ export class Viewer {
 
 
   ngAfterViewInit() {
-    console.log(this.viewerStore.mapBounds);
     const mapBounds = this.viewerStore.mapBounds();
     this.map = new Map({
       container: this.mapContainer.nativeElement,
@@ -160,7 +157,9 @@ export class Viewer {
 
     this.map.on('load',() => {
       this.addTracksToMap(this.viewerStore.tileUrl());
-      this.showInfoOnClick(this.tracksMaplibreLayerId);
+      if(this.enableClick) {
+        this.showInfoOnClick(this.tracksMaplibreLayerId);
+      }
       this.addHoverFeatureStateToLayer(this.tracksMaplibreLayerId, this.tracksMaplibreSourceId, this.viewerStore.tileName()) // TODO support for multiple; && Support changes
     });
 

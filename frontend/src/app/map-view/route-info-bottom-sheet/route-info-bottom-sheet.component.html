@@ -1,0 +1,22 @@
+<mat-nav-list>
+  @for(routeMeta of routeMetas; track routeMeta.id) {
+    <a [routerLink]="[`/route/${routeMeta.id}`]" (click)="dismiss()" mat-list-item>
+      <span matListItemTitle>{{ routeMeta.name }}</span>
+      <span matLine>
+        @if(routeMeta.distance_m){
+          Distance: {{ routeMeta.distance_m  / 1000 }} km
+        }
+        @if(routeMeta.ascent_m && routeMeta.descent_m){
+          Elevation: {{ routeMeta.ascent_m }} / {{ routeMeta.descent_m }} m
+        }
+        @if(routeMeta.website ){
+          Website: {{ routeMeta.website }}
+        }
+        @if(routeMeta.description){
+          Description: {{ routeMeta.description }}
+        }
+      </span>
+    </a>
+  }
+
+</mat-nav-list>

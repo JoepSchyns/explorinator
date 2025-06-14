@@ -19,7 +19,6 @@ $loop_filter$ language plpgsql;
 -- expects {'min_m': number, 'max_m': number } or  null
 CREATE OR REPLACE FUNCTION distance_filter(filter jsonb, distance_m real) RETURNS boolean AS $distance_filter$
 BEGIN
-RAISE NOTICE 'Distance value: %', distance_m;
   IF filter IS NULL THEN
     RETURN TRUE;
   ELSEIF (filter->>'max_m')::real >= 80000 THEN
@@ -29,6 +28,17 @@ RAISE NOTICE 'Distance value: %', distance_m;
   END IF;
 END;
 $distance_filter$ language plpgsql;
+
+-- expects string[] or  null
+CREATE OR REPLACE FUNCTION ids_filter(filter jsonb, id: int8) RETURNS boolean AS $ids_filter$
+BEGIN
+  IF filter IS NULL THEN
+    RETURN TRUE;
+  ELSE
+    RETURN filter @> to_jsonb(id);
+  END IF;
+END;
+$ids_filter$ language plpgsql;
 
 
 CREATE OR REPLACE FUNCTION public.filter_routes(
@@ -54,6 +64,7 @@ BEGIN
 	    AND "geom" && ST_Transform(ST_TileEnvelope(z ,x ,y, margin => 0.015625), 3857)
         AND loop_filter(query->'query'->>'loop_filter', roundtrip)
 		AND distance_filter(query->'query'->'distance_filter', distance_m::real)
+    AND ids_filter(query->'query'->'ids_filter', id)
 	) AS tile;
   RETURN mvt;
 END

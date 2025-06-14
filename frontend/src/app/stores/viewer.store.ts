@@ -3,6 +3,22 @@ import { environment } from '../../environments/environment';
 import { computed } from '@angular/core';
 import { debounce } from '../../utils/debounce';
 
+export type RouteMeta = {
+    id: string;
+    name?: string;
+    ascent_m?: number;
+    descent_m?: number;
+    description?: string;
+    distance_m?: number;
+    color?: string;
+    from?: string;
+    osmc_symbol?: string;
+    roundtrip?: 'yes' | 'no';
+    to?: string;
+    website?: string;
+    geom: string; // GeoJSON LineString
+}
+
 export const LOOP_FILTER_VALUES = ['ONLY_LOOPS', 'BOTH', 'NO_LOOPS'] as const;
 export type LoopFilter = typeof LOOP_FILTER_VALUES[number];
 
@@ -15,6 +31,7 @@ export type ViewerState = {
     filters: {
         loop: LoopFilter,
         distance: DistanceFilter
+        ids?: string[];
     }
 };
 export const MAX_DISTANCE_METERS = 80000; // 80 km; 80km means 80+km
@@ -28,10 +45,14 @@ const defaultViewerState: ViewerState = {
         }
     }
 };
-const LOCAL_STORAGE_KEY = 'viewerStore';
+
+function getLocalStorageKey(){
+    return 'viewer-state' + window.location.pathname;
+};
 function getIntialState() {
     try {
-        const storedState = localStorage.getItem(LOCAL_STORAGE_KEY);
+
+        const storedState = localStorage.getItem(getLocalStorageKey());
         if (storedState) {
             return JSON.parse(storedState) as ViewerState;
         }
@@ -42,7 +63,7 @@ function getIntialState() {
 }
 function setStateToLocalStorage(state: ViewerState) {
     try {
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state));
+        localStorage.setItem(getLocalStorageKey(), JSON.stringify(state));
     } catch (e) {
         console.error('UserStore: Error persisting state to localStorage:', e);
     }
@@ -50,12 +71,13 @@ function setStateToLocalStorage(state: ViewerState) {
 const debouncedSetStateToLocalStorage = debounce(setStateToLocalStorage, 1000);
 
 function createQueryJSON(filters: ViewerState['filters']) {
-    const query ={
+    const query = {
         loop_filter: filters.loop,
         distance_filter: {
             min_m: filters.distance.minMeters,
             max_m: filters.distance.maxMeters
-        }
+        },
+        ids_filter: filters.ids
     };
 
     return JSON.stringify(query);
@@ -63,7 +85,6 @@ function createQueryJSON(filters: ViewerState['filters']) {
 
 const tileName = 'filter_routes';
 export const ViewerStore = signalStore(
-    { providedIn: 'root' },
     withState(getIntialState()),
     withComputed((store) => ({
         tileUrl: computed(() => `${environment.marvinBaseUrl}/${tileName}?query=${createQueryJSON(store.filters())
@@ -78,6 +99,9 @@ export const ViewerStore = signalStore(
         },
         updateDistanceFilter(distance: ViewerState['filters']['distance']) {
             patchState(store, () => ({ filters: { ...store.filters(), distance } }));
+        },
+        updateIdsFilter(ids?: string[]) {
+            patchState(store, () => ({ filters: { ...store.filters(), ids } }));
         },
         tileName: () => tileName,
         updateMapBounds(bounds: [number, number, number, number]) {
