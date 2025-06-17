@@ -1,4 +1,4 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
@@ -16,9 +16,11 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class SearchBarComponent {
   readonly filtersDialog = inject(MatDialog);
+  toggleFilters = output();
 
   openFilters() {
-    this.filtersDialog.open(SearchFiltersComponent);
+    this.toggleFilters.emit();
+    //this.filtersDialog.open(SearchFiltersComponent);
   }
 
 }

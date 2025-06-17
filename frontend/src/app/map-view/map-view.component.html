@@ -1,2 +1,11 @@
-<app-search-bar (viewerStore)="viewerStore" />
-<app-viewer (routesClicked)="openRoutesBottomSheet($event)" (viewerStore)="viewerStore"/>
+<mat-drawer-container>
+  <mat-drawer-content>
+    <app-search-bar (toggleFilters)="drawer.toggle()"/>
+    <app-viewer (routesClicked)="openRoutesBottomSheet($event)"/>
+  </mat-drawer-content>
+  <mat-drawer mode="over" position="end" #drawer>
+    <h2>Filters</h2>
+    <app-filters></app-filters>
+
+    </mat-drawer>
+</mat-drawer-container>

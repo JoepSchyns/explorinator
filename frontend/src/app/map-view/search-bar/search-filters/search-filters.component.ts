@@ -1,14 +1,12 @@
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatListModule } from '@angular/material/list';
-import { LoopFilterComponent } from './loop-filter/loop-filter.component';
-import { DistanceFilterComponent } from "./distance-filter/distance-filter.component";
+import { FiltersComponent } from '../filters/filters.component';
 
 
 @Component({
   selector: 'app-search-filters',
-  imports: [MatDialogModule, MatButtonModule, MatListModule, LoopFilterComponent, DistanceFilterComponent, DistanceFilterComponent],
+  imports: [MatDialogModule, MatButtonModule, FiltersComponent],
   templateUrl: './search-filters.component.html',
   styleUrl: './search-filters.component.scss',
 })

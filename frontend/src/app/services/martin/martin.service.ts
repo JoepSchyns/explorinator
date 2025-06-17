@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
-import { lastValueFrom, map, of } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { map } from 'rxjs';
 
 export interface MartinCatalog {
   "tiles": {
@@ -23,6 +23,6 @@ export class MartinService {
   private http = inject(HttpClient);
 
   getTileNames() {
-    return this.http.get<MartinCatalog>(environment.marvinBaseUrl + '/catalog').pipe(map((c) => Object.keys(c.tiles)));
+    return this.http.get<MartinCatalog>(environment.martinBaseUrl + '/catalog').pipe(map((c) => Object.keys(c.tiles)));
   }
 }

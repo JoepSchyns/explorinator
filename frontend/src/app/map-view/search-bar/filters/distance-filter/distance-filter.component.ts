@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import {MatSliderModule} from '@angular/material/slider';
 import { FormsModule } from '@angular/forms';
 import { MAX_DISTANCE_METERS, ViewerStore } from '../../../../stores/viewer.store';
@@ -11,7 +11,8 @@ import { MAX_DISTANCE_METERS, ViewerStore } from '../../../../stores/viewer.stor
 })
 export class DistanceFilterComponent {
   public maxDistanceKilometers = MAX_DISTANCE_METERS / 1000;
-  private viewerStore = inject(ViewerStore);
+  viewerStore = inject(ViewerStore);
+
   public minKilometers = this.viewerStore.filters().distance.minMeters / 1000;
   public maxKilometers = this.viewerStore.filters().distance.maxMeters / 1000;
 

@@ -5,3 +5,10 @@ app-search-bar {
     top: 4rem;
     transform: translate(-50%, -50%);
 }
+mat-drawer-container{
+    width: 100vw;
+    height: 100vh;
+    mat-drawer{
+        padding: 2rem;
+    }
+}

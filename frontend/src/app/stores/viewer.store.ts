@@ -4,7 +4,7 @@ import { computed } from '@angular/core';
 import { debounce } from '../../utils/debounce';
 
 export type RouteMeta = {
-    id: string;
+    id: number;
     name?: string;
     ascent_m?: number;
     descent_m?: number;
@@ -31,7 +31,7 @@ export type ViewerState = {
     filters: {
         loop: LoopFilter,
         distance: DistanceFilter
-        ids?: string[];
+        ids?: number[];
     }
 };
 export const MAX_DISTANCE_METERS = 80000; // 80 km; 80km means 80+km
@@ -87,7 +87,7 @@ const tileName = 'filter_routes';
 export const ViewerStore = signalStore(
     withState(getIntialState()),
     withComputed((store) => ({
-        tileUrl: computed(() => `${environment.marvinBaseUrl}/${tileName}?query=${createQueryJSON(store.filters())
+        tileUrl: computed(() => `${environment.martinBaseUrl}/${tileName}?query=${createQueryJSON(store.filters())
             }`),
     })),
     withMethods((store) => ({
@@ -100,7 +100,7 @@ export const ViewerStore = signalStore(
         updateDistanceFilter(distance: ViewerState['filters']['distance']) {
             patchState(store, () => ({ filters: { ...store.filters(), distance } }));
         },
-        updateIdsFilter(ids?: string[]) {
+        updateIdsFilter(ids?: number[]) {
             patchState(store, () => ({ filters: { ...store.filters(), ids } }));
         },
         tileName: () => tileName,
