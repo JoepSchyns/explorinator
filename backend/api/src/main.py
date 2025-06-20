@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     db_port: str = "5432"
     db_user: str = "postgres"
     db_password: str = "password"
-    db_name: str = "explorintator"
+    db_name: str = "explorinator"
 
 settings = Settings()
 
