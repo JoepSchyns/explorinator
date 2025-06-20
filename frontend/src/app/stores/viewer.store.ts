@@ -16,7 +16,7 @@ export type RouteMeta = {
     roundtrip?: 'yes' | 'no';
     to?: string;
     website?: string;
-    geom: string; // GeoJSON LineString
+    geom: GeoJSON.Feature | GeoJSON.FeatureCollection ;
 }
 
 export const LOOP_FILTER_VALUES = ['ONLY_LOOPS', 'BOTH', 'NO_LOOPS'] as const;
@@ -77,7 +77,7 @@ function createQueryJSON(filters: ViewerState['filters']) {
             min_m: filters.distance.minMeters,
             max_m: filters.distance.maxMeters
         },
-        ids_filter: filters.ids
+        ids_filter: filters.ids?.map((id) => Number(id)),
     };
 
     return JSON.stringify(query);

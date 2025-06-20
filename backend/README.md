@@ -30,7 +30,7 @@ END;
 $distance_filter$ language plpgsql;
 
 -- expects string[] or  null
-CREATE OR REPLACE FUNCTION ids_filter(filter jsonb, id: int8) RETURNS boolean AS $ids_filter$
+CREATE OR REPLACE FUNCTION ids_filter(filter jsonb, id int8) RETURNS boolean AS $ids_filter$
 BEGIN
   IF filter IS NULL THEN
     RETURN TRUE;

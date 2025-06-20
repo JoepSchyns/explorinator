@@ -1,9 +1,11 @@
-from typing import Union, Optional
+import json
+from typing import Union, Optional, Dict, Any
 import os
 import asyncpg
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from pydantic_settings import BaseSettings
 from pydantic import BaseModel, Field
+from contextlib import asynccontextmanager
 
 app = FastAPI()
 
@@ -30,32 +32,48 @@ class RouteResponse(BaseModel):
     roundtrip: Optional[bool] = Field(None, example=None)
     to: Optional[str] = Field(None, example="Cadzand")
     website: Optional[str] = Field(None, example="https://www.wandelnet.nl/nederlands-kustpad-deel-1")
-    geom: Optional[str] = Field(None, example="0105000020110F0000...")
+    geom: Dict[str, Any] = Field(None, example={
+        "type": "LineString",
+        "coordinates": [[4.123, 52.123], [4.124, 52.124]]
+    })
 
     class Config:
         populate_by_name = True
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    app.state.db_pool = await asyncpg.create_pool(
+        host=settings.db_host,
+        port=settings.db_port,
+        user=settings.db_user,
+        password=settings.db_password,
+        database=settings.db_name
+    )
+    try:
+        yield
+    finally:
+        await app.state.db_pool.close()
+
+app = FastAPI(lifespan=lifespan)
+
+async def get_db():
+    async with app.state.db_pool.acquire() as conn:
+        yield conn
+
 @app.get("/route/{route_id}", response_model=RouteResponse, response_model_by_alias=True, summary="Get route by ID", description="Retrieve a route from the database by its unique ID.", response_description="A route object.")
-async def get_route(route_id: int):
+async def get_route(route_id: int, conn=Depends(get_db)):
     """
     Get a route by its ID.
     Returns a route object with all details, or 404 if not found.
     """
     try:
-        conn = await asyncpg.connect(
-            host=settings.db_host,
-            port=settings.db_port,
-            user=settings.db_user,
-            password=settings.db_password,
-            database=settings.db_name
-        )
-        route = await conn.fetchrow("SELECT * FROM routes WHERE id = $1", route_id)
-        await conn.close()
+        route = await conn.fetchrow("""
+            SELECT *, ST_AsGeoJSON(geom) AS geom_geojson FROM routes WHERE id = $1
+        """, route_id)
         if route:
-            # Map 'from' to 'from_' for Pydantic
             route_dict = dict(route)
-            if 'from' in route_dict:
-                route_dict['from_'] = route_dict.pop('from')
+            if 'geom_geojson' in route_dict:
+                route_dict['geom'] = json.loads(route_dict.pop('geom_geojson'))
             return RouteResponse(**route_dict)
         else:
             raise HTTPException(status_code=404, detail="Route not found")

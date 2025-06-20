@@ -13,8 +13,13 @@ export class DistanceFilterComponent {
   public maxDistanceKilometers = MAX_DISTANCE_METERS / 1000;
   viewerStore = inject(ViewerStore);
 
-  public minKilometers = this.viewerStore.filters().distance.minMeters / 1000;
-  public maxKilometers = this.viewerStore.filters().distance.maxMeters / 1000;
+  public minKilometers;
+  public maxKilometers;
+  constructor() {
+    // Ensure the initial values are set correctly
+    this.minKilometers = this.viewerStore.filters().distance.minMeters / 1000;
+    this.maxKilometers = this.viewerStore.filters().distance.maxMeters / 1000;
+  }
 
   update_filter(){
     this.viewerStore.updateDistanceFilter({

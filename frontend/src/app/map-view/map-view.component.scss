@@ -5,10 +5,18 @@ app-search-bar {
     top: 4rem;
     transform: translate(-50%, -50%);
 }
+
 mat-drawer-container{
     width: 100vw;
     height: 100vh;
     mat-drawer{
-        padding: 2rem;
+        padding: 1.5rem;
+        margin: 3rem 0;
+        mat-toolbar{
+            display: flex;
+            .spacer{
+                flex: 1;
+            }
+        }
     }
 }

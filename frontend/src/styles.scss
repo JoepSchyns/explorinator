@@ -1,3 +1,5 @@
+@use '@angular/material' as mat;
+@use './_theme-colors' as my-theme; // location of generated file
 @import 'maplibre-gl/dist/maplibre-gl.css';
 
 html, body {
@@ -6,4 +8,15 @@ html, body {
 }
 
 html, body { height: 100%; }
+html {
+  color-scheme: light dark;
+  @include mat.theme((
+    color: (
+      primary: my-theme.$primary-palette,
+      tertiary: my-theme.$tertiary-palette,
+    ),
+    typography: Roboto,
+    density: 0
+  ));
+}
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

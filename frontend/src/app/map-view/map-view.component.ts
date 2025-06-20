@@ -5,11 +5,14 @@ import { RouteInfoBottomSheetComponent } from './route-info-bottom-sheet/route-i
 import { RouteMeta, ViewerStore } from '../stores/viewer.store';
 import { MatBottomSheet, MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
 import { FiltersComponent } from './search-bar/filters/filters.component';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @Component({
-  imports: [ViewerComponent, SearchBarComponent, MatBottomSheetModule, MatSidenavModule, FiltersComponent],
+  imports: [MatIconModule, MatButtonModule, ViewerComponent, SearchBarComponent, MatBottomSheetModule, MatSidenavModule, FiltersComponent, MatToolbarModule],
   templateUrl: './map-view.component.html',
   styleUrl: './map-view.component.scss',
 })

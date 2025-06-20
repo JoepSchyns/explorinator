@@ -3,8 +3,14 @@
     <app-search-bar (toggleFilters)="drawer.toggle()"/>
     <app-viewer (routesClicked)="openRoutesBottomSheet($event)"/>
   </mat-drawer-content>
-  <mat-drawer mode="over" position="end" #drawer>
-    <h2>Filters</h2>
+  <mat-drawer mode="over" position="start" #drawer>
+    <mat-toolbar>
+      <span>Filters</span>
+      <div class="spacer"></div>
+      <button (click)="drawer.toggle()" matIconButton>
+        <mat-icon>arrow_backward</mat-icon>
+      </button>
+    </mat-toolbar>
     <app-filters></app-filters>
 
     </mat-drawer>
