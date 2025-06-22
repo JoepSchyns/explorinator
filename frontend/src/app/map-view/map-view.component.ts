@@ -7,12 +7,12 @@ import { MatBottomSheet, MatBottomSheetModule } from '@angular/material/bottom-s
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
-import { FiltersComponent } from './search-bar/filters/filters.component';
+import { FiltersComponent } from './filters/filters.component';
 import { MatIconModule } from '@angular/material/icon';
 
 
 @Component({
-  imports: [MatIconModule, MatButtonModule, ViewerComponent, SearchBarComponent, MatBottomSheetModule, MatSidenavModule, FiltersComponent, MatToolbarModule],
+  imports: [ MatIconModule, MatButtonModule, ViewerComponent, SearchBarComponent, MatBottomSheetModule, MatSidenavModule, FiltersComponent, MatToolbarModule],
   templateUrl: './map-view.component.html',
   styleUrl: './map-view.component.scss',
 })

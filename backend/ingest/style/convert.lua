@@ -1,7 +1,6 @@
 local routes =  osm2pgsql.define_table({
     name = 'routes',
-    -- Define a composite primary key using both osm_id and osm_type
-    ids = { type = 'any', id_column = 'id', type_column = 'type' },
+    ids = { type = 'any', id_column = 'id' },
     columns = {
         { column = 'name', type = 'text' },
         { column = 'ascent_m', type = 'real' },
@@ -10,7 +9,7 @@ local routes =  osm2pgsql.define_table({
         { column = 'distance_m', type = 'real' },
         { column = 'color', type = 'text' },
         { column = 'from', type = 'text' },
-        { column = 'osmc_symbol', type = 'text' },
+        { column = 'symbol', type = 'text' },
         { column = 'roundtrip', type = 'text' },
         { column = 'to', type = 'text' },
         { column = 'website', type = 'text' },
@@ -68,8 +67,14 @@ function parseValueToMeters(input_str, default_input_unit)
 end
 
 function osm2pgsql.process_relation(object)
-    -- We can do filtering here if needed currently done using osmFilter maybe simpler to do it here; figure our performance?
     local tags = object.tags
+
+    -- filter type=route and route=hiking:
+    if not tags or not tags.type or tags.type ~= 'route' or 
+        not tags.route or tags.route ~= 'hiking' then
+        return
+    end
+
     local route = {
         name = tags.name,
         ascent_m = parseValueToMeters(tags.ascent, 'm'),

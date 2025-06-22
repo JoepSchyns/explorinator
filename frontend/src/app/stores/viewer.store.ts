@@ -28,6 +28,7 @@ export type DistanceFilter = {
 };
 export type ViewerState = {
     mapBounds: [number, number, number, number] | null; // [west, south, east, north]
+    preferredMapBounds: [number, number, number, number] | null; // [west, south, east, north]
     filters: {
         loop: LoopFilter,
         distance: DistanceFilter
@@ -37,6 +38,7 @@ export type ViewerState = {
 export const MAX_DISTANCE_METERS = 80000; // 80 km; 80km means 80+km
 const defaultViewerState: ViewerState = {
     mapBounds: null, // Default bounds covering the whole world
+    preferredMapBounds: null,
     filters: {
         loop: 'BOTH',
         distance: {
@@ -107,6 +109,11 @@ export const ViewerStore = signalStore(
         updateMapBounds(bounds: [number, number, number, number]) {
             patchState(store, () => ({
                 mapBounds: bounds
+            }));
+        },
+        updatePreferredMapBounds(bounds: [number, number, number, number]) {
+            patchState(store, () => ({
+                preferredMapBounds: bounds
             }));
         }
     })),

@@ -1,0 +1,12 @@
+@if(maxKilometers < maxDistanceKilometers){ {{ minKilometers }} km - {{
+maxKilometers }}km } @else { {{ minKilometers }} km - any }
+<mat-slider
+  [min]="0"
+  [max]="maxDistanceKilometers"
+  [step]="1"
+  [discrete]="true"
+  [showTickMarks]="true"
+>
+  <input [(ngModel)]="minKilometers" matSliderStartThumb />
+  <input [(ngModel)]="maxKilometers" matSliderEndThumb />
+</mat-slider>

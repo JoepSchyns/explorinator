@@ -1,15 +1,20 @@
-<form class="example-form">
-  <mat-form-field>
-    <input matInput placeholder="TODO search not implemented" type="text">
-    <span matPrefix>
-      <mat-icon>search</mat-icon>
-    </span>
-    <button
-      matIconButton
-      matSuffix
-      (click)="openFilters()"
-    >
-      <mat-icon>tune</mat-icon>
-    </button>
-  </mat-form-field>
-</form>
+<mat-card [class.hasNoResults]="!(results | async)?.features?.length">
+  <form>
+    <mat-form-field>
+      <input matInput type="search" (input)="onInput($event)" (keydown.enter)="onEnter($event)">
+      <span matPrefix>
+        <mat-icon>search</mat-icon>
+      </span>
+      <button matIconButton matSuffix (click)="openFilters()" type="button">
+        <mat-icon>tune</mat-icon>
+      </button>
+    </mat-form-field>
+  </form>
+  <mat-action-list role="list">
+    @for(feature of filterResultFeatures(results | async)?.features; track feature.id) {
+      <button mat-list-item  role="listitem" (click)="onFeatureClick(feature)">
+        {{ feature.properties?.['display_name'] }}
+      </button>
+    }
+  </mat-action-list>
+</mat-card>

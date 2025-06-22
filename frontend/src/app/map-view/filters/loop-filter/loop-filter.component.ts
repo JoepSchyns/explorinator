@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import {MatButtonToggleGroup, MatButtonToggle} from '@angular/material/button-toggle';
-import { LOOP_FILTER_VALUES, LoopFilter, ViewerStore } from '../../../../stores/viewer.store';
+import { LOOP_FILTER_VALUES, LoopFilter, ViewerStore } from '../../../stores/viewer.store';
 
 
 @Component({

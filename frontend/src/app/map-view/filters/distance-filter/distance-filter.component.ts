@@ -1,7 +1,7 @@
 import { Component, inject, input } from '@angular/core';
 import {MatSliderModule} from '@angular/material/slider';
 import { FormsModule } from '@angular/forms';
-import { MAX_DISTANCE_METERS, ViewerStore } from '../../../../stores/viewer.store';
+import { MAX_DISTANCE_METERS, ViewerStore } from '../../../stores/viewer.store';
 
 @Component({
   selector: 'app-distance-filter',

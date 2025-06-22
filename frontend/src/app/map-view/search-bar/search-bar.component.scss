@@ -11,3 +11,14 @@
         }
     }
 }
+
+mat-card {
+    &.hasNoResults{
+        padding: 0;
+        height: 0;
+    }
+    padding: 1rem;
+    mat-action-list button{
+        display: grid;
+    }
+}

@@ -51,8 +51,10 @@ export class RouteViewComponent {
         }
         this.prevId = currentId;
         this.viewerStore.updateIdsFilter([currentId]);
+        console.log('RouteViewComponent: updating ids filter to', [currentId]);
         this.apiService.getRoute(currentId).subscribe(routeMeta => {
           this.routeMeta = routeMeta;
+          this.viewerStore.updatePreferredMapBounds(routeMeta.geom.bbox?.slice(0, 4) as [number, number, number, number]);
         });
       });
     });

@@ -14,25 +14,39 @@ export class ViewerComponent {
   @ViewChild('map') private mapContainer!: ElementRef<HTMLElement>;
   private map: Map | undefined;
   private viewerStore = inject(ViewerStore)
-  routesClickedOutput = output<RouteMeta[]>({alias: 'routesClicked'});
+  routesClickedOutput = output<RouteMeta[]>({ alias: 'routesClicked' });
   @Input() enableClick = true;
-  
+
   constructor() {
+    // Watch for changes in the tile URL and update the map accordingly
     effect(() => {
       const tileUrl = this.viewerStore.tileUrl();
       untracked(() => {
-        if(!this.map){
+        if (!this.map) {
           return
         }
         try {
           this.map!.removeLayer(this.tracksMaplibreLayerId);
           this.map!.removeSource(this.tracksMaplibreSourceId);
           this.addTracksToMap(tileUrl);
-        }catch(e){
+        } catch (e) {
           console.info("Could not reset map", e);
         }
       });
-      
+    });
+
+    // Watch map bounds changes and update the store
+    effect(() => {
+      const mapBounds = this.viewerStore.preferredMapBounds();
+      untracked(() => {
+        if (!this.map || !mapBounds) {
+          return;
+        }
+        this.map.fitBounds(mapBounds, {
+          padding: 20
+        },
+      { pauseUpdate: true });
+      });
     });
   }
 
@@ -86,50 +100,50 @@ export class ViewerComponent {
   }
 
   private tracksMaplibreSourceId = 'track-datas';
-  private tracksMaplibreLayerId = 'track-layer';  
-  private addTracksToMap(tileUrl: string){
-     const tileSourceName = this.viewerStore.tileName(); // TODO support for multiple && support for changes
-      this.map!.addSource(this.tracksMaplibreSourceId, {
-        type: 'vector',
-        url: tileUrl,
-        promoteId: 'id',
-      });
+  private tracksMaplibreLayerId = 'track-layer';
+  private addTracksToMap(tileUrl: string) {
+    const tileSourceName = this.viewerStore.tileName(); // TODO support for multiple && support for changes
+    this.map!.addSource(this.tracksMaplibreSourceId, {
+      type: 'vector',
+      url: tileUrl,
+      promoteId: 'id',
+    });
 
-      
-      this.map!.addLayer({
-        'id': this.tracksMaplibreLayerId,
-        'type': 'line',
-        'source': this.tracksMaplibreSourceId,
-        'source-layer': tileSourceName,
-        'layout': {
-          'line-join': 'round',
-          'line-cap': 'round'
-        },
-        paint: {
-          'line-color': [
-            'case',
-            ['to-boolean', ['get', 'color']],
-            ['get', 'color'],
-            ['concat',
+
+    this.map!.addLayer({
+      'id': this.tracksMaplibreLayerId,
+      'type': 'line',
+      'source': this.tracksMaplibreSourceId,
+      'source-layer': tileSourceName,
+      'layout': {
+        'line-join': 'round',
+        'line-cap': 'round'
+      },
+      paint: {
+        'line-color': [
+          'case',
+          ['to-boolean', ['get', 'color']],
+          ['get', 'color'],
+          ['concat',
             'hsl(',
             ["abs", ['%', ['get', 'id'], 360]],
             ',100%, 30%)']
-          ],
-          'line-width': [
-            'case',
-            ['boolean', ['feature-state', 'hover'], false],
-            10,
-            5
-          ],
-          'line-blur': [
-            'case',
-            ['boolean', ['feature-state', 'hover'], false],
-            2,
-            0
-          ],
-          'line-opacity': 0.5
-        }
-      });      
+        ],
+        'line-width': [
+          'case',
+          ['boolean', ['feature-state', 'hover'], false],
+          10,
+          5
+        ],
+        'line-blur': [
+          'case',
+          ['boolean', ['feature-state', 'hover'], false],
+          2,
+          0
+        ],
+        'line-opacity': 0.5
+      }
+    });
   }
 
 
@@ -138,7 +152,7 @@ export class ViewerComponent {
     this.map = new Map({
       container: this.mapContainer.nativeElement,
       style: environment.mapStyleUrl,
-      ...(mapBounds?{bounds: mapBounds}:{}),
+      ...(mapBounds ? { bounds: mapBounds } : {}),
     });
 
     this.map.addControl(new NavigationControl({
@@ -155,15 +169,15 @@ export class ViewerComponent {
       trackUserLocation: true
     }));
 
-    this.map.on('load',() => {
+    this.map.on('load', () => {
       this.addTracksToMap(this.viewerStore.tileUrl());
-      if(this.enableClick) {
+      if (this.enableClick) {
         this.showInfoOnClick(this.tracksMaplibreLayerId);
       }
       this.addHoverFeatureStateToLayer(this.tracksMaplibreLayerId, this.tracksMaplibreSourceId, this.viewerStore.tileName()) // TODO support for multiple; && Support changes
     });
 
-    this.map.on('move', () => {
+    this.map.on('move', (event) => {
       const bounds = this.map!.getBounds();
       const southwest = bounds.getSouthWest();
       const northeast = bounds.getNorthEast();
