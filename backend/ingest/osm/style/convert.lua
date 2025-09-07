@@ -1,6 +1,6 @@
 local routes =  osm2pgsql.define_table({
     name = 'routes',
-    ids = { type = 'any', id_column = 'id' },
+    ids = { type = 'relation', id_column = 'id' },
     columns = {
         { column = 'name', type = 'text' },
         { column = 'ascent_m', type = 'real' },
@@ -88,8 +88,6 @@ function osm2pgsql.process_relation(object)
         website = tags.website,
         color = tags.colour,
         geom = object:as_multilinestring(),
-        id= tags.osm_id,
-        type= tags.osm_type
     }
     routes:insert(route)
 end

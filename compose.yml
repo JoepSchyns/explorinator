@@ -5,7 +5,7 @@ services:
     expose:
       - 80
   db:
-    build: backend/postgis/17-master
+    image: postgis/postgis:17-master
     restart: unless-stopped
     environment:
       - POSTGRES_PASSWORD=password
@@ -14,7 +14,7 @@ services:
       - ./data/db:/var/lib/postgresql/data
       - ./backend/db/init:/docker-entrypoint-initdb.d
     ports:
-      - "5432:5432"
+      - "5433:5432"
     expose:
       - 5432
   martin:

@@ -19,7 +19,6 @@ class Settings(BaseSettings):
 settings = Settings()
 
 class RouteResponse(BaseModel):
-    type: str = Field(..., example="R")
     id: int = Field(..., example=9174496)
     name: str = Field(..., example="Nederlands Kustpad deel 1 - 01")
     ascent_m: Optional[float] = Field(None, example=None)
