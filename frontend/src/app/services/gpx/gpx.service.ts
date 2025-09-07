@@ -15,7 +15,7 @@ export class GpxService {
     const gpxString = new XMLSerializer().serializeToString(gpx);
     const link = document.createElement('a');
     link.download = `${options?.metadata?.name}.gpx`;
-    const blob = new Blob([gpxString], {type: 'text/xml'});
+    const blob = new Blob([gpxString], {type: 'application/gpx+xml'});
     link.href = window.URL.createObjectURL(blob);
     link.click();
 
