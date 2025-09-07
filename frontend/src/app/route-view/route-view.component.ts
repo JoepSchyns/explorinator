@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Location } from '@angular/common'
 import { GpxService } from '../services/gpx/gpx.service';
+import { Feature , Geometry, GeoJsonProperties } from 'geojson';
 
 
 @Component({
@@ -29,17 +30,25 @@ export class RouteViewComponent {
   back() {
     this.location.back()
   }
-
+  
   download(){
-    this.gpxService.gpxDownload(this.routeMeta!.geom, {metadata: {
-    name: this.routeMeta?.name,
-    author: {
-      name: 'Explorinator',
-      link: {
-        href: this.location.path(),
+    const geojson : Feature<Geometry, GeoJsonProperties> = { 
+      type: "Feature",
+        properties : {
+          name : this.routeMeta?.name,
+        },
+        geometry: this.routeMeta!.geom
+    } ;
+
+    this.gpxService.gpxDownload(geojson, {metadata: {
+      name: this.routeMeta?.name,
+      author: {
+        name: 'Explorinator',
+        link: {
+          href: this.location.path(),
+        }
       }
-    }
-  }});
+    }});
   }
 
   constructor() {

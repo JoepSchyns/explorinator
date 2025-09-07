@@ -16,7 +16,7 @@ export type RouteMeta = {
     roundtrip?: 'yes' | 'no';
     to?: string;
     website?: string;
-    geom: GeoJSON.Feature | GeoJSON.FeatureCollection ;
+    geom: GeoJSON.Geometry ;
 }
 
 export const LOOP_FILTER_VALUES = ['ONLY_LOOPS', 'BOTH', 'NO_LOOPS'] as const;
