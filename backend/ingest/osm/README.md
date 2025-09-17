@@ -13,3 +13,8 @@ curl https://download.geofabrik.de/europe/netherlands/overijssel-latest.osm.pbf 
 ``` bash
 docker run --rm -it --volume ${PWD}\data:/data --volume ${PWD}\style:/style -e PGPASSWORD=password --network="host" iboates/osm2pgsql:latest --output=flex --style /style/convert.lua -U postgres -d explorinator -H 127.0.0.1 -P 5432 /data/map.osm.pbf
 ```
+
+3. Merge with routes
+``` bash
+docker run --rm -it --network="host" -v ${PWD}:/workspace -e PGPASSWORD=password postgres:latest psql -U postgres -h 127.0.0.1 -p 5432 -d explorinator -f /workspace/convert.sql
+```

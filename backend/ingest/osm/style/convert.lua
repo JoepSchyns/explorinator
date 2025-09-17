@@ -1,5 +1,5 @@
 local routes =  osm2pgsql.define_table({
-    name = 'routes',
+    name = 'routes_osm',
     ids = { type = 'relation', id_column = 'id' },
     columns = {
         { column = 'name', type = 'text' },

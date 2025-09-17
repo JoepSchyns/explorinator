@@ -126,7 +126,7 @@ export class ViewerComponent {
           ['get', 'color'],
           ['concat',
             'hsl(',
-            ["abs", ['%', ['get', 'id'], 360]],
+            ["abs", ['%', ['get', 'distance_m'], 360]],
             ',100%, 30%)']
         ],
         'line-width': [

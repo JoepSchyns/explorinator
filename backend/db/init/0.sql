@@ -1,19 +1,25 @@
 CREATE EXTENSION postgis;
 
 CREATE TABLE routes (
-    id BIGINT PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    source_id TEXT NOT NULL,
+    UNIQUE(source, source_id),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    source TEXT NOT NULL,
     name TEXT,
+    rating DECIMAL(2,1) CHECK (rating >= 0 AND rating <= 5),
     ascent_m REAL,
     descent_m REAL,
     "description" TEXT,
-    distance_m REAL,
+    distance_m REAL NOT NULL,
     color TEXT,
-    "from" TEXT,
-    osmc_symbol TEXT,
-    roundtrip TEXT,
-    "to" TEXT,
+    "from" Geometry(Point, 3857),
+    symbol TEXT,
+    round_trip BOOLEAN NOT NULL,
+    "to" Geometry(Point, 3857),
     website TEXT,
-    geom Geometry(MultiLineString, 3857)
+    elevations REAL[],
+    geom Geometry(Geometry, 3857) NOT NULL CHECK (ST_GeometryType(geom) IN ('ST_LineString', 'ST_MultiLineString'))
 );
 
 /******************************************************************************
@@ -55,22 +61,18 @@ END;
 $func$;
 
 -- expects boolean or null
-CREATE OR REPLACE FUNCTION loop_filter(filter text, roundtrip text)
+CREATE OR REPLACE FUNCTION loop_filter(filter text, round_trip boolean)
 RETURNS boolean AS $loop_filter$
 BEGIN
-    IF filter = 'BOTH' THEN
+    IF filter = 'BOTH' OR filter IS NULL THEN
         RETURN TRUE;
-    ELSIF filter = 'ONLY_LOOPS' THEN
-        RETURN roundtrip = 'yes';
-    ELSIF filter = 'NO_LOOPS' THEN
-        RETURN roundtrip = 'no';
     ELSE
-        RETURN TRUE;
+        RETURN round_trip;
     END IF;
 END;
 $loop_filter$ LANGUAGE plpgsql;
 
--- expects {'min_m': number, 'max_m': number } or null
+-- expects {'min_m': number, 'max_m': number } or null (where max_m of 80000 or higher means "no upper limit")
 CREATE OR REPLACE FUNCTION distance_filter(filter jsonb, distance_m real)
 RETURNS boolean AS $distance_filter$
 BEGIN
@@ -85,7 +87,7 @@ END;
 $distance_filter$ LANGUAGE plpgsql;
 
 -- expects string[] or null
-CREATE OR REPLACE FUNCTION ids_filter(filter jsonb, id int8)
+CREATE OR REPLACE FUNCTION ids_filter(filter jsonb, id UUID)
 RETURNS boolean AS $ids_filter$
 BEGIN
     IF filter IS NULL THEN
@@ -96,18 +98,19 @@ BEGIN
 END;
 $ids_filter$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION public.filter_routes(
-    z integer, x integer, y integer, query jsonb
-) RETURNS bytea AS $$
+CREATE OR REPLACE FUNCTION public.filter_routes(z integer, x integer, y integer, query jsonb)
+ RETURNS bytea
+ LANGUAGE plpgsql
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$
 DECLARE
     mvt bytea;
 BEGIN
-    RAISE NOTICE 'query value: %', query;
     SELECT INTO mvt ST_AsMVT(tile, 'filter_routes', 4096, 'geom')
     FROM (
         SELECT
             ST_AsMVTGeom(
-                ST_Transform(ST_CurveToLine(geom::geometry), 3857),
+                ST_Simplify(ST_LineMerge(geom::geometry),GREATEST(20, 2000 + (-1980.0/11.0) * z)),
                 ST_TileEnvelope(z, x, y),
                 4096, 64, true
             ) AS geom,
@@ -115,14 +118,15 @@ BEGIN
         FROM
             public.routes
         WHERE
-            z > 7
-            AND geom && ST_Transform(ST_TileEnvelope(z, x, y, margin => 0.015625), 3857)
-            AND loop_filter(query->'query'->>'loop_filter', roundtrip)
+            geom && ST_TileEnvelope(z, x, y, margin => 0.015625)
+            AND loop_filter(query->'query'->>'loop_filter', round_trip)
             AND distance_filter(query->'query'->'distance_filter', distance_m::real)
             AND ids_filter(query->'query'->'ids_filter', id)
     ) AS tile;
     RETURN mvt;
 END
-$$ LANGUAGE plpgsql IMMUTABLE STRICT PARALLEL SAFE;
+$function$
+;
+
 
 
