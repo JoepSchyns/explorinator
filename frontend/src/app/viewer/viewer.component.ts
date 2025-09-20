@@ -55,7 +55,17 @@ export class ViewerComponent {
   } & Object) => void) {
     this.map!.on('mouseenter', layerName, () => this.map!.getCanvas().style.cursor = 'pointer');
     this.map!.on('mouseleave', layerName, () => this.map!.getCanvas().style.cursor = '');
-    this.map!.on('click', layerName, action);
+    // Instead of clicking directyly on the feature (which is hard when it's thin), we check for nearby features
+    this.map!.on('click', (e) => {
+      const offset = 5;
+      const features = this.map!.queryRenderedFeatures([[e.point.x - offset, e.point.y - offset], [e.point.x + offset, e.point.y + offset]], {
+        layers: [layerName]
+      });
+      if(features.length === 0) {
+        return;
+      }
+      this.routesClickedOutput.emit(features!.map(f => f.properties) as RouteMeta[]);
+    });
   }
 
   private showInfoOnClick(layerName: string) {
