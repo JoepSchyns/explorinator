@@ -4,7 +4,7 @@ import { computed } from '@angular/core';
 import { debounce } from '../../utils/debounce';
 
 export type RouteMeta = {
-    id: number;
+    id: string;
     name?: string;
     ascent_m?: number;
     descent_m?: number;

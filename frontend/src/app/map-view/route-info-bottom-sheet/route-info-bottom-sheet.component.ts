@@ -3,10 +3,11 @@ import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material/bott
 import { RouteMeta } from '../../stores/viewer.store';
 import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-route-info-bottom-sheet',
-  imports: [MatListModule, RouterModule],
+  imports: [MatListModule, RouterModule, MatButtonModule],
   templateUrl: './route-info-bottom-sheet.component.html',
   styleUrl: './route-info-bottom-sheet.component.scss'
 })

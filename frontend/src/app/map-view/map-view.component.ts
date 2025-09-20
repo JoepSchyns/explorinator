@@ -22,7 +22,8 @@ export class MapViewComponent {
 
   openRoutesBottomSheet(routeMetas: RouteMeta[]) {
     this.bottomSheet.open(RouteInfoBottomSheetComponent, {
-      data: routeMetas
+      data: routeMetas,
+      hasBackdrop:false
     });
   }
 
