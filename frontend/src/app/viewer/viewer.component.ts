@@ -64,7 +64,9 @@ export class ViewerComponent {
       if(features.length === 0) {
         return;
       }
-      this.routesClickedOutput.emit(features!.map(f => f.properties) as RouteMeta[]);
+      const routes = features.map(f => f.properties) as RouteMeta[];
+      this.routesClickedOutput.emit(routes);
+      this.map!.setFilter(this.tracksMaplibreLayerId + '_selected', ['in', 'id', ...routes.map(f => f.id)]);
     });
   }
 
@@ -153,6 +155,31 @@ export class ViewerComponent {
         ],
         'line-opacity': 0.5
       }
+    });
+    this.map!.addLayer({
+      'id': this.tracksMaplibreLayerId + '_selected',
+      'type': 'line',
+      'source': this.tracksMaplibreSourceId,
+      'source-layer': tileSourceName,
+      'layout': {
+        'line-join': 'round',
+        'line-cap': 'round'
+      },
+      paint: {
+        'line-color': [
+          'case',
+          ['to-boolean', ['get', 'color']],
+          ['get', 'color'],
+          ['concat',
+            'hsl(',
+            ["abs", ['%', ['get', 'distance_m'], 360]],
+            ',100%, 30%)']
+        ],
+        'line-width': 10,
+        'line-blur': 2,
+        'line-opacity': 1
+      },
+      filter: ['in', 'id', ''] // Initially don't show anything 
     });
   }
 
