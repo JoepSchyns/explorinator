@@ -4,6 +4,7 @@ import { RouteMeta } from '../../stores/viewer.store';
 import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
+import { getColor } from '../routeColor.util';
 
 @Component({
   selector: 'app-route-info-bottom-sheet',
@@ -14,6 +15,8 @@ import { MatButtonModule } from '@angular/material/button';
 export class RouteInfoBottomSheetComponent {
   public routeMetas = inject<RouteMeta[]>(MAT_BOTTOM_SHEET_DATA);
   private bottomSheetRef = inject<MatBottomSheetRef<RouteInfoBottomSheetComponent>>(MatBottomSheetRef);
+  
+  getColor = getColor;
 
   dismiss(): void {
     this.bottomSheetRef.dismiss();

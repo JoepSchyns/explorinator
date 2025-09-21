@@ -6,16 +6,20 @@ import { debounce } from '../../utils/debounce';
 export type RouteMeta = {
     id: string;
     name?: string;
+    created_at: Date;
+    source: string;
+    rating?: number;
     ascent_m?: number;
     descent_m?: number;
     description?: string;
-    distance_m?: number;
+    distance_m: number;
     color?: string;
     from?: string;
-    osmc_symbol?: string;
-    roundtrip?: 'yes' | 'no';
+    symbol?: string;
+    round_trip: boolean;
     to?: string;
     website?: string;
+    elevations?: number[];
     geom: GeoJSON.LineString | GeoJSON.MultiLineString ;
 }
 

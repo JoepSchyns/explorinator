@@ -1,6 +1,9 @@
 <mat-list>
   @for(routeMeta of routeMetas; track routeMeta.id) {
-    <a [routerLink]="[`/route/${routeMeta.id}`]" (click)="dismiss()" mat-list-item>      <img matListItemAvatar src="..." alt="...">
+    <a [routerLink]="[`/route/${routeMeta.id}`]" (click)="dismiss()" mat-list-item>
+      <svg matListItemAvatar width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" [style]="'fill:' + getColor(routeMeta)" />
+      </svg>
       <h3 matListItemTitle>{{ routeMeta.name }}</h3>
       <div matListItemLine>
          @if(routeMeta.distance_m){

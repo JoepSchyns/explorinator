@@ -4,6 +4,7 @@ import { RouteMeta, ViewerStore } from '../stores/viewer.store';
 import { environment } from '../../environments/environment';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { RouteInfoBottomSheetComponent } from './route-info-bottom-sheet/route-info-bottom-sheet.component';
+import { LINE_COLOR_EXPRESSION } from './routeColor.util';
 
 
 @Component({
@@ -151,7 +152,7 @@ export class ViewerComponent implements AfterViewInit, OnDestroy {
         'line-cap': 'round'
       },
       paint: {
-        'line-color': this.getLineColorExpression(),
+        'line-color': LINE_COLOR_EXPRESSION,
         'line-width': [
           'case',
           ['boolean', ['feature-state', 'hover'], false],
@@ -179,7 +180,7 @@ export class ViewerComponent implements AfterViewInit, OnDestroy {
         'line-cap': 'round'
       },
       paint: {
-        'line-color': this.getLineColorExpression(),
+        'line-color': LINE_COLOR_EXPRESSION,
         'line-width': this.HOVER_LINE_WIDTH,
         'line-blur': this.HOVER_LINE_BLUR,
         'line-opacity': this.SELECTED_LINE_OPACITY
@@ -188,20 +189,6 @@ export class ViewerComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  /**
-   * Gets the MapLibre expression for line color based on feature properties
-   */
-  private getLineColorExpression(): any {
-    return [
-      'case',
-      ['to-boolean', ['get', 'color']],
-      ['get', 'color'],
-      ['concat',
-        'hsl(',
-        ["abs", ['%', ['get', 'distance_m'], 360]],
-        ',100%, 30%)']
-    ];
-  }
 
 
   /**
