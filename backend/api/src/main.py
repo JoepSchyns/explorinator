@@ -1,6 +1,8 @@
 import json
-from typing import Union, Optional, Dict, Any
+from typing import List, Union, Optional, Dict, Any
 import os
+from uuid import UUID
+from datetime import datetime
 import asyncpg
 from fastapi import FastAPI, HTTPException, Depends
 from pydantic_settings import BaseSettings
@@ -19,18 +21,22 @@ class Settings(BaseSettings):
 settings = Settings()
 
 class RouteResponse(BaseModel):
-    id: int = Field(..., example=9174496)
-    name: str = Field(..., example="Nederlands Kustpad deel 1 - 01")
+    id: UUID = Field(..., example=UUID("91744960-1234-5678-9012-345678901234"))
+    created_at: Optional[datetime] = Field(..., example="2023-10-01T12:00:00Z")
+    source: str = Field(..., example="Wandelnet")
+    name: Optional[str] = Field(..., example="Nederlands Kustpad deel 1 - 01")
+    rating: Optional[float] = Field(None, example=4.5)
     ascent_m: Optional[float] = Field(None, example=None)
     descent_m: Optional[float] = Field(None, example=None)
     description: Optional[str] = Field(None, example=None)
     distance_m: Optional[float] = Field(None, example=None)
     color: Optional[str] = Field(None, example="blue")
     from_: Optional[str] = Field(None, alias="from", example="Sluis")
-    osmc_symbol: Optional[str] = Field(None, example=None)
-    roundtrip: Optional[bool] = Field(None, example=None)
+    symbol: Optional[str] = Field(None, example=None)
+    round_trip: Optional[bool] = Field(None, example=None)
     to: Optional[str] = Field(None, example="Cadzand")
     website: Optional[str] = Field(None, example="https://www.wandelnet.nl/nederlands-kustpad-deel-1")
+    elevations: Optional[List[float]] = Field(None, example=[1.0, 2.0, 3.0])
     geom: Dict[str, Any] = Field(None, example={
         "type": "LineString",
         "coordinates": [[4.123, 52.123], [4.124, 52.124]]
@@ -60,14 +66,14 @@ async def get_db():
         yield conn
 
 @app.get("/route/{route_id}", response_model=RouteResponse, response_model_by_alias=True, summary="Get route by ID", description="Retrieve a route from the database by its unique ID.", response_description="A route object.")
-async def get_route(route_id: int, conn=Depends(get_db)):
+async def get_route(route_id: UUID, conn=Depends(get_db)):
     """
     Get a route by its ID.
     Returns a route object with all details, or 404 if not found.
     """
     try:
         route = await conn.fetchrow("""
-            SELECT *, ST_AsGeoJSON(geom) AS geom_geojson FROM routes WHERE id = $1
+            SELECT *, ST_AsGeoJSON(ST_transform(geom, 4326)) AS geom_geojson FROM routes WHERE id = $1
         """, route_id)
         if route:
             route_dict = dict(route)

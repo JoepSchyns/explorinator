@@ -79,7 +79,7 @@ function createQueryJSON(filters: ViewerState['filters']) {
             min_m: filters.distance.minMeters,
             max_m: filters.distance.maxMeters
         },
-        ids_filter: filters.ids?.map((id) => Number(id)),
+        ids_filter: filters.ids,
     };
 
     return JSON.stringify(query);
