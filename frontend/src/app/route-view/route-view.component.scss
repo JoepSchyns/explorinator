@@ -7,10 +7,17 @@
         display: block;
         margin-bottom: calc(-1 * var(--mat-card-outlined-container-shape, var(--mat-sys-corner-medium)));
     }
+    mat-toolbar{
+        #title{
+            text-overflow: ellipsis;
+            overflow: hidden; 
+        }
+    }
     mat-card{
         flex: 1;
         mat-toolbar{
             display: flex;
+            
             .spacer{
                 flex: 1;
             }

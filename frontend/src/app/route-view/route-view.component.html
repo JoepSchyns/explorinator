@@ -3,7 +3,7 @@
         <button (click)="back()" matIconButton>
             <mat-icon>arrow_backward</mat-icon>
         </button>
-        <span>{{ routeMeta?.name }}</span>
+        <span id="title">{{ routeMeta?.name }}</span>
     </mat-toolbar>
     <app-viewer [enableClick]="false"></app-viewer>
     <mat-card class="example-card" appearance="outlined">
@@ -25,7 +25,7 @@
             Elevation: {{ routeMeta?.ascent_m }} / {{ routeMeta?.descent_m }} m
             }
             @if(routeMeta?.website ){
-            Website: {{ routeMeta?.website }}
+            Website: <a [href]="routeMeta?.website" target="_blank">{{ routeMeta?.website }}</a>
             }
             @if(routeMeta?.description){
             Description: {{ routeMeta?.description }}
