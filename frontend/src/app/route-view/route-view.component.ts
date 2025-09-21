@@ -50,6 +50,22 @@ export class RouteViewComponent {
       }
     }});
   }
+  // Helper function to calculate bounding box from GeoJSON geometry
+  private getBBox(geom: GeoJSON.LineString | GeoJSON.MultiLineString): [number, number, number, number] {
+    const coords = geom.type === 'LineString' ? 
+      geom.coordinates : 
+      geom.coordinates.flat();  
+    let minLng = coords[0][0], maxLng = coords[0][0];
+    let minLat = coords[0][1], maxLat = coords[0][1];
+    coords.forEach(coord => {
+      minLng = Math.min(minLng, coord[0]);
+      maxLng = Math.max(maxLng, coord[0]);
+      minLat = Math.min(minLat, coord[1]);
+      maxLat = Math.max(maxLat, coord[1]);
+    }
+    );
+    return [minLng, minLat, maxLng, maxLat];
+  }
 
   constructor() {
     effect(() => {
@@ -63,7 +79,8 @@ export class RouteViewComponent {
         console.log('RouteViewComponent: updating ids filter to', [currentId]);
         this.apiService.getRoute(currentId).subscribe(routeMeta => {
           this.routeMeta = routeMeta;
-          this.viewerStore.updatePreferredMapBounds(routeMeta.geom.bbox?.slice(0, 4) as [number, number, number, number]);
+          const bbox = this.getBBox(routeMeta.geom);
+          this.viewerStore.updatePreferredMapBounds(bbox);
         });
       });
     });

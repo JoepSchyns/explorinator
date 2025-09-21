@@ -16,7 +16,7 @@ export type RouteMeta = {
     roundtrip?: 'yes' | 'no';
     to?: string;
     website?: string;
-    geom: GeoJSON.Geometry ;
+    geom: GeoJSON.LineString | GeoJSON.MultiLineString ;
 }
 
 export const LOOP_FILTER_VALUES = ['ONLY_LOOPS', 'BOTH', 'NO_LOOPS'] as const;
@@ -51,6 +51,7 @@ const defaultViewerState: ViewerState = {
 function getLocalStorageKey(){
     return 'viewer-state' + window.location.pathname;
 };
+
 function getIntialState() {
     try {
 
