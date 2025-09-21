@@ -5,10 +5,11 @@ import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { getColor } from '../routeColor.util';
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-route-info-bottom-sheet',
-  imports: [MatListModule, RouterModule, MatButtonModule],
+  imports: [MatListModule, RouterModule, MatButtonModule, TitleCasePipe],
   templateUrl: './route-info-bottom-sheet.component.html',
   styleUrl: './route-info-bottom-sheet.component.scss'
 })

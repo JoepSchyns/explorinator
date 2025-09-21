@@ -30,6 +30,10 @@
                         </div>
                         <div class="stat-label">{{ routeMeta?.round_trip ? 'Loop' : 'Route' }}</div>
                     </div>
+                    <div class="stat-item">
+                        <div class="stat-value">{{ routeMeta?.source | titlecase }}</div>
+                        <div class="stat-label">Source</div>
+                    </div>
                 </div>
                 <div class="spacer"></div>
                 <button matIconButton disabled>

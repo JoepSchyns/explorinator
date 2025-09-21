@@ -12,6 +12,7 @@
         @if(routeMeta.ascent_m && routeMeta.descent_m){
           Elevation: {{ routeMeta.ascent_m }} / {{ routeMeta.descent_m }} m
         }
+        Source: {{ routeMeta.source | titlecase }}
         @if(routeMeta.website ){
           Website: {{ routeMeta.website }}
         }

@@ -6,7 +6,7 @@ import { ApiService } from '../services/api/api.service';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { Location } from '@angular/common'
+import { Location, TitleCasePipe } from '@angular/common'
 import { GpxService } from '../services/gpx/gpx.service';
 import { Feature , Geometry, GeoJsonProperties } from 'geojson';
 import { StripHtmlPipe } from "../pipes/strip-html.pipe";
@@ -14,7 +14,7 @@ import { StripHtmlPipe } from "../pipes/strip-html.pipe";
 
 @Component({
   selector: 'app-route-view',
-  imports: [MatToolbarModule, MatIconModule, MatButtonModule, ViewerComponent, MatCardModule, StripHtmlPipe],
+  imports: [TitleCasePipe, MatToolbarModule, MatIconModule, MatButtonModule, ViewerComponent, MatCardModule, StripHtmlPipe],
   templateUrl: './route-view.component.html',
   styleUrl: './route-view.component.scss',
 })
