@@ -2,6 +2,8 @@ import { AfterViewInit, Component, effect, ElementRef, inject, Input, OnDestroy,
 import { GeolocateControl, Map, MapGeoJSONFeature, MapMouseEvent, NavigationControl } from 'maplibre-gl';
 import { RouteMeta, ViewerStore } from '../stores/viewer.store';
 import { environment } from '../../environments/environment';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { RouteInfoBottomSheetComponent } from './route-info-bottom-sheet/route-info-bottom-sheet.component';
 
 
 @Component({
@@ -14,8 +16,9 @@ export class ViewerComponent implements AfterViewInit, OnDestroy {
   @ViewChild('map') private mapContainer!: ElementRef<HTMLElement>;
   private map: Map | undefined;
   private viewerStore = inject(ViewerStore);
-  routesClickedOutput = output<RouteMeta[]>({ alias: 'routesClicked' });
   @Input() enableClick = true;
+  private bottomSheet = inject(MatBottomSheet);
+
 
   // Constants
   private readonly TRACKS_SOURCE_ID = 'track-datas';
@@ -76,8 +79,12 @@ export class ViewerComponent implements AfterViewInit, OnDestroy {
       const features = this.map!.queryRenderedFeatures([[e.point.x - offset, e.point.y - offset], [e.point.x + offset, e.point.y + offset]], {
         layers: [this.TRACKS_LAYER_ID]
       });
+
       const routes = features.map(f => f.properties) as RouteMeta[];
-      this.routesClickedOutput.emit(routes);
+      this.bottomSheet.open(RouteInfoBottomSheetComponent, {
+        data: routes,
+        hasBackdrop: false
+      });
       this.map!.setFilter(this.SELECTED_TRACKS_LAYER_ID, ['in', 'id', ...routes.map(f => f.id)]);
     });
   }
