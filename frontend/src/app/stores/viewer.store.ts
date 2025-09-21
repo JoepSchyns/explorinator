@@ -27,6 +27,7 @@ export type DistanceFilter = {
     maxMeters: number
 };
 export type ViewerState = {
+    version: 1,
     mapBounds: [number, number, number, number] | null; // [west, south, east, north]
     preferredMapBounds: [number, number, number, number] | null; // [west, south, east, north]
     filters: {
@@ -37,6 +38,7 @@ export type ViewerState = {
 };
 export const MAX_DISTANCE_METERS = 80000; // 80 km; 80km means 80+km
 const defaultViewerState: ViewerState = {
+    version: 1,
     mapBounds: null, // Default bounds covering the whole world
     preferredMapBounds: null,
     filters: {
@@ -57,7 +59,8 @@ function getIntialState() {
 
         const storedState = localStorage.getItem(getLocalStorageKey());
         if (storedState) {
-            return JSON.parse(storedState) as ViewerState;
+            const state = JSON.parse(storedState);
+            return { ...defaultViewerState, ...state }; // Merge with default to ensure all properties exist
         }
     } catch (e) {
         console.error('UserStore: Error loading state from localStorage:', e);
