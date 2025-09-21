@@ -76,9 +76,6 @@ export class ViewerComponent implements AfterViewInit, OnDestroy {
       const features = this.map!.queryRenderedFeatures([[e.point.x - offset, e.point.y - offset], [e.point.x + offset, e.point.y + offset]], {
         layers: [this.TRACKS_LAYER_ID]
       });
-      if (features.length === 0) {
-        return;
-      }
       const routes = features.map(f => f.properties) as RouteMeta[];
       this.routesClickedOutput.emit(routes);
       this.map!.setFilter(this.SELECTED_TRACKS_LAYER_ID, ['in', 'id', ...routes.map(f => f.id)]);

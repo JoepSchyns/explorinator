@@ -20,7 +20,11 @@ export class MapViewComponent {
   private bottomSheet = inject(MatBottomSheet);
   public viewerStore = inject(ViewerStore);
 
-  openRoutesBottomSheet(routeMetas: RouteMeta[]) {
+  updateRouteBottomSheet(routeMetas: RouteMeta[]) {
+    if(routeMetas.length === 0) {
+      this.bottomSheet.dismiss();
+      return;
+    }
     this.bottomSheet.open(RouteInfoBottomSheetComponent, {
       data: routeMetas,
       hasBackdrop:false
