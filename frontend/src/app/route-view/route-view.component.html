@@ -6,10 +6,31 @@
         <span id="title">{{ routeMeta?.name }}</span>
     </mat-toolbar>
     <app-viewer [enableClick]="false"></app-viewer>
-    <mat-card class="example-card" appearance="outlined">
+    <mat-card class="route-info-card" appearance="outlined">
         <mat-card-content>
-            <mat-toolbar>
-                <span>Route Information</span>
+            <mat-toolbar class="actions-toolbar">
+                <div class="route-stats">
+                    @if(routeMeta?.distance_m){
+                    <div class="stat-item">
+                        <div class="stat-value">{{ getFormattedDistance() }}</div>
+                        <div class="stat-label">Length</div>
+                    </div>
+                    }
+                    <div class="stat-item">
+                        <div class="stat-value">{{ (routeMeta?.ascent_m ?? 0) + (routeMeta?.descent_m ?? 0) }} m</div>
+                        <div class="stat-label">Elevation gain</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">
+                            @if(routeMeta?.round_trip){
+                                <mat-icon class="icon">loop</mat-icon>
+                            }@else{
+                                <mat-icon class="icon">trending_flat</mat-icon>
+                            }
+                        </div>
+                        <div class="stat-label">{{ routeMeta?.round_trip ? 'Loop' : 'Route' }}</div>
+                    </div>
+                </div>
                 <div class="spacer"></div>
                 <button matIconButton disabled>
                     <mat-icon>share</mat-icon>
@@ -18,17 +39,16 @@
                     <mat-icon>download</mat-icon>
                 </button>
             </mat-toolbar>
-            @if(routeMeta?.distance_m){
-            Distance: {{ (routeMeta?.distance_m ?? 0) / 1000 }} km
-            }
-            @if(routeMeta?.ascent_m && routeMeta?.descent_m){
-            Elevation: {{ routeMeta?.ascent_m }} / {{ routeMeta?.descent_m }} m
-            }
+
             @if(routeMeta?.website ){
-            Website: <a [href]="routeMeta?.website" target="_blank">{{ routeMeta?.website }}</a>
+            <p class="info-item">
+                Website:  <a [href]="routeMeta?.website" target="_blank">{{ routeMeta?.website }}</a>
+            </p>
             }
             @if(routeMeta?.description){
-            Description: {{ routeMeta?.description }}
+            <p>
+                {{ routeMeta?.description | striphtml }}
+            </p>
             }
         </mat-card-content>
     </mat-card>

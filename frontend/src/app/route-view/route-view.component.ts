@@ -9,11 +9,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { Location } from '@angular/common'
 import { GpxService } from '../services/gpx/gpx.service';
 import { Feature , Geometry, GeoJsonProperties } from 'geojson';
+import { StripHtmlPipe } from "../pipes/strip-html.pipe";
 
 
 @Component({
   selector: 'app-route-view',
-  imports: [MatToolbarModule, MatIconModule, MatButtonModule, ViewerComponent, MatCardModule],
+  imports: [MatToolbarModule, MatIconModule, MatButtonModule, ViewerComponent, MatCardModule, StripHtmlPipe],
   templateUrl: './route-view.component.html',
   styleUrl: './route-view.component.scss',
 })
@@ -30,6 +31,13 @@ export class RouteViewComponent {
   back() {
     this.location.back()
   }
+  
+  getFormattedDistance(): string {
+    if (!this.routeMeta?.distance_m) return '0 km';
+    const km = this.routeMeta.distance_m / 1000;
+    return km < 10 ? `${km.toFixed(1)} km` : `${Math.round(km)} km`;
+  }
+
   
   download(){
     const geojson : Feature<Geometry, GeoJsonProperties> = { 

@@ -13,13 +13,69 @@
             overflow: hidden; 
         }
     }
-    mat-card{
+    .route-info-card{
         flex: 1;
-        mat-toolbar{
+        
+        .actions-toolbar{
             display: flex;
             
             .spacer{
                 flex: 1;
+            }
+
+            .route-stats {
+                display: flex;
+                gap: 24px;
+                
+                .stat-item {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                    
+                    .stat-value {
+                        font-size: 28px;
+                        font-weight: 100;
+                        color: var(--mat-sys-on-surface);
+                        display: flex;
+                        align-items: center;
+                        
+                        .icon {
+                            font-size: 28px;
+                            width: 28px;
+                            height: 28px;
+                            color: var(--mat-sys-primary);
+                        }
+                    }
+                    
+                    .stat-label {
+                        font-size: 14px;
+                        color: var(--mat-sys-on-surface-variant);
+                        font-weight: 400;
+                    }
+                }
+            }
+        }
+
+        a {
+            color: var(--mat-sys-primary);
+            text-decoration: none;
+            
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}
+
+@media (max-width: 600px) {
+    .route-stats {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 16px !important;
+        
+        .stat-item {
+            .stat-value {
+                font-size: 24px !important;
             }
         }
     }
