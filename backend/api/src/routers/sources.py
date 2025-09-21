@@ -7,7 +7,7 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
-@router.get("/",
+@router.get("",
     response_model=list[str],
     summary="List available sources",
     description="Retrieve a list of all available source names.",
