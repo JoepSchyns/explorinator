@@ -1,0 +1,12 @@
+<mat-form-field>
+  <mat-label>Sources</mat-label>
+  <mat-select multiple [(ngModel)]="selectedSources" (ngModelChange)="updateFilter($event)" [disabled]="isLoadingSources()">
+    @if (isLoadingSources()) {
+      <mat-option disabled>Loading sources...</mat-option>
+    } @else {
+      @for (source of allAvailableSources(); track source) {
+        <mat-option [value]="source">{{source}}</mat-option>
+      }
+    }
+  </mat-select>
+</mat-form-field>

@@ -86,7 +86,7 @@ BEGIN
 END;
 $distance_filter$ LANGUAGE plpgsql;
 
--- expects string[] or null
+-- expects UUID[] or null
 CREATE OR REPLACE FUNCTION ids_filter(filter jsonb, id UUID)
 RETURNS boolean AS $ids_filter$
 BEGIN
@@ -97,6 +97,18 @@ BEGIN
     END IF;
 END;
 $ids_filter$ LANGUAGE plpgsql;
+
+-- expects string[] or null
+CREATE OR REPLACE FUNCTION sources_filter(filter jsonb, source TEXT)
+RETURNS boolean AS $sources_filter$
+BEGIN
+    IF filter IS NULL THEN
+        RETURN TRUE;
+    ELSE
+        RETURN filter @> to_jsonb(source);
+    END IF;
+END;
+$sources_filter$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION public.filter_routes(z integer, x integer, y integer, query jsonb)
  RETURNS bytea
@@ -122,6 +134,7 @@ BEGIN
             AND loop_filter(query->'query'->>'loop_filter', round_trip)
             AND distance_filter(query->'query'->'distance_filter', distance_m::real)
             AND ids_filter(query->'query'->'ids_filter', id)
+            AND sources_filter(query->'query'->'sources_filter', source)
     ) AS tile;
     RETURN mvt;
 END

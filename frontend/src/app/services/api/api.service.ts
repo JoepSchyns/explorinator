@@ -12,4 +12,8 @@ export class ApiService {
   getRoute(id: number) {
     return this.http.get<RouteMeta>(`${environment.apiBaseUrl}/route/${id}`);
   }
+
+  getSources() {
+    return this.http.get<string[]>(`${environment.apiBaseUrl}/source`);
+  }
 }
