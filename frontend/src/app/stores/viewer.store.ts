@@ -60,7 +60,7 @@ function getIntialState() {
         const storedState = localStorage.getItem(getLocalStorageKey());
         if (storedState) {
             const state = JSON.parse(storedState);
-            return { ...defaultViewerState, ...state }; // Merge with default to ensure all properties exist
+            return { ...defaultViewerState, ...state } as ViewerState; // Merge with default to ensure all properties exist
         }
     } catch (e) {
         console.error('UserStore: Error loading state from localStorage:', e);
