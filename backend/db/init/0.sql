@@ -61,16 +61,20 @@ END;
 $func$;
 
 -- expects boolean or null
-CREATE OR REPLACE FUNCTION loop_filter(filter text, round_trip boolean)
-RETURNS boolean AS $loop_filter$
+CREATE OR REPLACE FUNCTION public.loop_filter(filter text, round_trip boolean)
+ RETURNS boolean
+ LANGUAGE plpgsql
+AS $function$
 BEGIN
-    IF filter = 'BOTH' OR filter IS NULL THEN
-        RETURN TRUE;
-    ELSE
-        RETURN round_trip;
-    END IF;
+    RETURN CASE
+        WHEN filter IS NULL OR filter = 'BOTH' THEN TRUE
+        WHEN round_trip AND filter = 'ONLY_LOOPS' THEN TRUE
+        WHEN NOT round_trip AND filter = 'NO_LOOPS' THEN TRUE
+        ELSE FALSE
+    END;
 END;
-$loop_filter$ LANGUAGE plpgsql;
+$function$
+;
 
 -- expects {'min_m': number, 'max_m': number } or null (where max_m of 80000 or higher means "no upper limit")
 CREATE OR REPLACE FUNCTION distance_filter(filter jsonb, distance_m real)

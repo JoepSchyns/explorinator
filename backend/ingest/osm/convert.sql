@@ -48,8 +48,8 @@ SELECT
 	CASE
 		WHEN lower(COALESCE(g.roundtrip, '')) = 'yes' THEN TRUE
 		WHEN lower(COALESCE(g.roundtrip, '')) = 'no' THEN FALSE
-		WHEN g.from IS NOT NULL AND g.to IS NOT NULL THEN (ST_Distance(g.from, g.to) < 100)  -- consider round trip if start and end are within 100 meters
-		ELSE FALSE  -- default to FALSE when we can't determine
+		WHEN g.from IS NOT NULL AND g.to IS NOT NULL THEN (ST_Distance(g.from, g.to) < 500)  -- consider round trip if start and end are within 500 meters
+		ELSE TRUE  -- default to TRUE when we can't determine
 	END AS round_trip,
 	g.to,
 	g.website,
