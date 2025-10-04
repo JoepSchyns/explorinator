@@ -124,21 +124,42 @@ DECLARE
 BEGIN
     SELECT INTO mvt ST_AsMVT(tile, 'filter_routes', 4096, 'geom')
     FROM (
+		WITH filtered_routes AS (
+			SELECT
+            *
+	        FROM
+	            public.routes
+	        WHERE
+	            geom && ST_TileEnvelope(z, x, y, margin => 0.015625)
+	            AND loop_filter(query->'query'->>'loop_filter', round_trip)
+	            AND distance_filter(query->'query'->'distance_filter', distance_m::real)
+	            AND ids_filter(query->'query'->'ids_filter', id)
+	            AND sources_filter(query->'query'->'sources_filter', source)
+		)
         SELECT
             ST_AsMVTGeom(
                 ST_Simplify(ST_LineMerge(geom::geometry),GREATEST(20, 2000 + (-1980.0/11.0) * z)),
                 ST_TileEnvelope(z, x, y),
                 4096, 64, true
             ) AS geom,
+			'line' AS "type",
             *
         FROM
-            public.routes
-        WHERE
-            geom && ST_TileEnvelope(z, x, y, margin => 0.015625)
-            AND loop_filter(query->'query'->>'loop_filter', round_trip)
-            AND distance_filter(query->'query'->'distance_filter', distance_m::real)
-            AND ids_filter(query->'query'->'ids_filter', id)
-            AND sources_filter(query->'query'->'sources_filter', source)
+            filtered_routes
+
+		UNION ALL
+
+		SELECT
+            ST_AsMVTGeom(
+                "from",
+                ST_TileEnvelope(z, x, y),
+                4096, 64, true
+            ) AS geom,
+			'circle' AS "type",
+            *
+        FROM
+            filtered_routes
+		
     ) AS tile;
     RETURN mvt;
 END
