@@ -125,10 +125,15 @@ export class ViewerComponent implements AfterViewInit, OnDestroy {
           (route, index, array) =>
             array.findIndex((r) => r.id === route.id) === index
         ); // Filter to unique routes only
-      this.bottomSheet.open(RouteInfoBottomSheetComponent, {
-        data: routes,
-        hasBackdrop: false,
-      });
+
+      if (routes.length === 0) {
+        this.bottomSheet.dismiss();
+      } else {
+        this.bottomSheet.open(RouteInfoBottomSheetComponent, {
+          data: routes,
+          hasBackdrop: false,
+        });
+      }
       this.map!.setFilter(this.SELECTED_TRACKS_LAYER_ID, [
         'in',
         'id',
@@ -273,7 +278,11 @@ export class ViewerComponent implements AfterViewInit, OnDestroy {
         'icon-halo-width': 2,
         'icon-halo-blur': 0,
       },
-      filter: ['all', ['==', ['get', 'type'], 'circle'], ['in', ['get', 'id'], ['literal', []]]], // Initially don't show anything
+      filter: [
+        'all',
+        ['==', ['get', 'type'], 'circle'],
+        ['in', ['get', 'id'], ['literal', []]],
+      ], // Initially don't show anything
     });
 
     // Add startpoint layer
