@@ -65,6 +65,7 @@ export class ViewerComponent implements AfterViewInit, OnDestroy {
           this.map.removeLayer(this.TRACKS_ICON_LAYER_ID);
           this.map.removeLayer(this.SELECTED_TRACKS_ICON_LAYER_ID);
           this.map.removeSource(this.TRACKS_SOURCE_ID);
+          this.map.removeImage('mymarker');
           this.addTracksToMap(tileUrl);
         } catch (error) {
           console.error('Failed to update map tracks:', error);
