@@ -306,9 +306,9 @@ export class ViewerComponent implements AfterViewInit, OnDestroy {
           'interpolate',
           ['linear'],
           ['zoom'],
-          10,
+          8,
           ['case', ['boolean', ['feature-state', 'hover'], false], 1, 0],
-          12,
+          10,
           [
             'case',
             ['boolean', ['feature-state', 'hover'], false],
