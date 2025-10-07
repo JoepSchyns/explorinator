@@ -50,19 +50,18 @@ export type ViewerState = {
 };
 export const MAX_DISTANCE_METERS = 80000; // 80 km; 80km means 80+km
 const defaultViewerState: ViewerState = {
-    version: 1,
-    mapBounds: null, // Default bounds covering the whole world
-    preferredMapBounds: null,
-    availableSources: null,
-    isLoadingSources: false,
-    filters: {
-        loop: 'BOTH',
-        distance: {
-            minMeters: 0,
-            maxMeters: MAX_DISTANCE_METERS
-        },
-        sources: null,
-    }
+  version: 1,
+  mapBounds: [
+    5.839580405079687, 52.08130061390838, 6.320025985755251, 52.375348641451126,
+  ],
+  preferredMapBounds: null,
+  availableSources: ['komoot', 'osm', 'outdooractive'],
+  isLoadingSources: false,
+  filters: {
+    loop: 'ONLY_LOOPS',
+    distance: { minMeters: 9000, maxMeters: 12000 },
+    sources: ['komoot', 'osm', 'outdooractive'],
+  },
 };
 
 function getLocalStorageKey(){
