@@ -26,7 +26,8 @@ export class SearchBarComponent {
   public results?: Observable<GeoJSON.FeatureCollection>;
   toggleFilters = output();
 
-  openFilters() {
+  openFilters(event: Event) {
+    event.stopPropagation();
     console.log('Opening filters dialog');
     this.toggleFilters.emit();
   }
