@@ -1,7 +1,7 @@
 import { Component, effect, inject, input, untracked } from '@angular/core';
 import { ViewerComponent } from '../viewer/viewer.component';
 import { MatCardModule } from '@angular/material/card';
-import { RouteMeta, ViewerStore } from '../stores/viewer.store';
+import { MAX_DISTANCE_METERS, RouteMeta, ViewerStore } from '../stores/viewer.store';
 import { ApiService } from '../services/api/api.service';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -83,7 +83,13 @@ export class RouteViewComponent {
           return;
         }
         this.prevId = currentId;
+
+        // Reset filters to show only the selected route
         this.viewerStore.updateIdsFilter([currentId]);
+        this.viewerStore.updateLoopFilter('BOTH');
+        this.viewerStore.updateDistanceFilter({ minMeters: 0, maxMeters: MAX_DISTANCE_METERS });
+        this.viewerStore.updateSourcesFilter(null);
+        
         console.log('RouteViewComponent: updating ids filter to', [currentId]);
         this.apiService.getRoute(currentId).subscribe(routeMeta => {
           this.routeMeta = routeMeta;
