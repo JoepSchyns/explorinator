@@ -4,6 +4,7 @@ import { computed, inject } from '@angular/core';
 import { debounce } from '../../utils/debounce';
 import { ApiService } from '../services/api/api.service';
 import { lastValueFrom } from 'rxjs';
+import { BUILD_HASH } from '../build-hash';
 
 export type RouteMeta = {
     id: string;
@@ -36,7 +37,7 @@ export type DistanceFilter = {
 export type SourcesFilter = string[] | null; // null means no filtering on sources
 
 export type ViewerState = {
-    version: 1,
+    version: string,
     mapBounds: [number, number, number, number] | null; // [west, south, east, north]
     preferredMapBounds: [number, number, number, number] | null; // [west, south, east, north]
     availableSources: string[] | null; // null means not loaded yet
@@ -50,7 +51,7 @@ export type ViewerState = {
 };
 export const MAX_DISTANCE_METERS = 80000; // 80 km; 80km means 80+km
 const defaultViewerState: ViewerState = {
-  version: 1,
+  version: BUILD_HASH, // Git commit hash, auto-generated during build
   mapBounds: [
     5.839580405079687, 52.08130061390838, 6.320025985755251, 52.375348641451126,
   ],
@@ -74,6 +75,9 @@ function getIntialState() {
         const storedState = localStorage.getItem(getLocalStorageKey());
         if (storedState) {
             const state = JSON.parse(storedState);
+            if(state.version !== defaultViewerState.version){
+                return defaultViewerState;
+            }
             return { ...defaultViewerState, ...state } as ViewerState; // Merge with default to ensure all properties exist
         }
     } catch (e) {
