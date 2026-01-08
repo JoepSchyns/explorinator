@@ -56,7 +56,7 @@ export class ViewerComponent implements AfterViewInit, OnDestroy {
     effect(() => {
       const tileUrl = this.viewerStore.tileUrl();
       untracked(() => {
-        if (!this.map) {
+        if (!this.map || !this.map.isStyleLoaded()) {
           return;
         }
         try {
