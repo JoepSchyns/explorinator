@@ -6,8 +6,7 @@ maxKilometers }}km } @else { {{ minKilometers }} km - any }
   [step]="1"
   [discrete]="true"
   [showTickMarks]="true"
-  (change)="update_filter()"
 >
-  <input [(ngModel)]="minKilometers" matSliderStartThumb />
-  <input [(ngModel)]="maxKilometers" matSliderEndThumb />
+  <input [(ngModel)]="minKilometers" (input)="update_filter()" matSliderStartThumb />
+  <input [(ngModel)]="maxKilometers" (input)="update_filter()" matSliderEndThumb />
 </mat-slider>
