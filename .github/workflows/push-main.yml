@@ -1,0 +1,22 @@
+name: Deploy on push to main
+
+on:
+  push:
+    branches:
+      - main
+
+permissions: 
+      packages: write
+      contents: read
+
+jobs:
+  build-push:
+    name: Build and Push containers 
+    uses: ./.github/workflows/action-build-and-push-containers.yml
+
+  deploy:
+    name: SSH Deployment
+    needs: build-push 
+    uses: ./.github/workflows/action-deploy.yml 
+    secrets: inherit
+      
