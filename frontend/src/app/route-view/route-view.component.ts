@@ -88,8 +88,8 @@ export class RouteViewComponent {
         this.viewerStore.updateIdsFilter([currentId]);
         this.viewerStore.updateLoopFilter('BOTH');
         this.viewerStore.updateDistanceFilter({ minMeters: 0, maxMeters: MAX_DISTANCE_METERS });
-        this.viewerStore.updateSourcesFilter(null);
-        
+        this.viewerStore.updateSourcesFilter(this.viewerStore.availableSources());
+
         console.log('RouteViewComponent: updating ids filter to', [currentId]);
         this.apiService.getRoute(currentId).subscribe(routeMeta => {
           this.routeMeta = routeMeta;
