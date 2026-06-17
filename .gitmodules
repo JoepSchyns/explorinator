@@ -1,0 +1,6 @@
+[submodule "backend/ingest/komoot"]
+	path = backend/ingest/komoot
+	url = git@github.com:JoepSchyns/explorinator-data-collector-1.git
+[submodule "backend/ingest/outdooractive"]
+	path = backend/ingest/outdooractive
+	url = git@github.com:JoepSchyns/explorinator-data-collector-2.git
