@@ -56,12 +56,12 @@ const defaultViewerState: ViewerState = {
     5.839580405079687, 52.08130061390838, 6.320025985755251, 52.375348641451126,
   ],
   preferredMapBounds: null,
-  availableSources: ['komoot', 'osm', 'outdooractive'],
+  availableSources: ['dc1', 'osm', 'dc2'],
   isLoadingSources: false,
   filters: {
     loop: 'ONLY_LOOPS',
     distance: { minMeters: 9000, maxMeters: 12000 },
-    sources: ['komoot', 'osm', 'outdooractive'],
+    sources: ['dc1', 'osm', 'dc2'],
   },
 };
 
