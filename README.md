@@ -1,6 +1,6 @@
-<img src="frontend/public/web-app-manifest-512x512.png" alt="Explorinator" width="80" align="left" style="margin-right: 16px" />
 
-# Explorinator
+
+# <img src="frontend/public/favicon.svg" alt="Explorinator" width="45"  /> Explorinator
 
 Explorinator combines hiking routes from multiple large aggregators into a single, searchable map.
 
@@ -22,31 +22,30 @@ To populate the application, I first wrote an ingestion script for [OpenStreetMa
 
 Routes are styled using [MapLibre](https://maplibre.org/) and rendered in the colors defined by their original source. Because styling happens client-side, colors remain consistent across the app and the map stays interactive. Where routes overlap, clicking any point on the map brings up a list of all routes passing through it. Selecting a route from the list opens a detail view with metadata and a direct GPX download — a feature that is frustratingly locked behind a paywall on most major aggregators.
 
+## Reflections
+
+The application has been running well — 140k+ routes from various sources collected across the Netherlands, with filtering fast enough to run on a resource-limited NAS. After using it for a while, though, I think I understand why the large aggregators don't offer an "all routes" view: there can be too many routes in certain areas even after filtering, showing them all clutters the map and can make it hard to find anything actually worth hiking.
+
+This raises an interesting question about curation. Aggregators likely rank by  popularity, which creates a feedback loop where less-discovered routes never surface. I see two ways around this: better filtering, or shifting the model entirely — using routes not as the primary object but as a signal for where good paths exist, and dynamically generating routes from that graph. The latter is almost certainly what Komoot does behind the scenes, judging by their data, and it is the more elegant solution.
+
+In the future I may play around with clustering and filtering based on terrain type, but for now I am happy to have a working prototype that scratches an itch I have had for years.
+
 ## Architecture
 
 ```mermaid
 graph TD
     Browser["Browser"]
 
-    subgraph nat["NAT · host ports 80 / 443"]
         Caddy["Caddy\n:80 · :443"]
-    end
-
-    subgraph edge_net["Docker · edge network"]
         Proxy["Nginx\n:80"]
-    end
 
-    subgraph app_net["Docker · app network"]
         Frontend["Angular\n:80"]
         API["FastAPI\n:8000"]
         Martin["Martin tile server\n:3000"]
-    end
-
-    subgraph data_net["Docker · data network"]
         DB[("PostgreSQL + PostGIS")]
-    end
 
-    Ingest["Ingest scripts"]
+
+    Ingest["Ingest scripts\nOSM and others"]
 
     Browser -->|HTTPS| Caddy
     Caddy --> Proxy
@@ -57,24 +56,6 @@ graph TD
     Martin -->|"vector tiles"| DB
     Ingest -.->|"offline"| DB
 ```
-
-All services run as Docker containers orchestrated with Compose. Caddy is the public entry point, handling TLS termination — swap `:80` for a domain name in the Caddyfile to get automatic HTTPS. It forwards traffic to the Nginx proxy over the internal `edge` network. Nginx routes requests across the `app` network to the Angular frontend, the FastAPI REST API, or the [Martin](https://martin.maplibre.org/) tile server. API and Martin connect to PostgreSQL + PostGIS over the isolated `data` network. The ingest scripts run offline to populate the database.
-
-## Running
-
-Start the full stack with:
-
-```bash
-docker compose up
-```
-
-This starts Caddy, Nginx, the Angular frontend, the FastAPI service, the Martin tile server, and PostgreSQL. See the individual READMEs for running each part in isolation or for ingesting data:
-
-- [Frontend](frontend/README.md)
-- [API](backend/api/README.MD)
-- [OSM ingest](backend/ingest/osm/README.md)
-- [Data collector 1](backend/ingest/dc1/README.md)
-- [Data collector 2](backend/ingest/dc2/README.md)
 
 ## Screenshots
 
@@ -92,11 +73,18 @@ This starts Caddy, Nginx, the Angular frontend, the FastAPI service, the Martin 
   </tr>
 </table>
 
-## Reflections
+## Running
 
-The application has been running well — 140k+ routes collected across the Netherlands, with filtering fast enough to run on a resource-limited NAS. After using it for a while, though, I think I understand why the large aggregators don't offer an "all routes" view: there are simply too many, and showing all of them at once clutters the map and makes it hard to find anything actually worth hiking.
+Start the full stack with:
 
-This raises an interesting question about curation. Aggregators likely rank by popularity, which creates a feedback loop where less-discovered routes never surface. I see two ways around this: better filtering, or shifting the model entirely — using routes not as the primary object but as a signal for where good paths exist, and dynamically generating routes from that graph. The latter is almost certainly what Komoot does behind the scenes, judging by their data, and it is the more elegant solution.
+```bash
+docker compose up
+```
 
-Future directions I am considering include clustering logic to reduce visual noise at lower zoom levels and filtering based on terrain type.
+This starts Nginx, the Angular frontend, the FastAPI service, the Martin tile server, and PostgreSQL. See the individual READMEs for running each part in isolation or for ingesting data:
 
+- [Frontend](frontend/README.md)
+- [API](backend/api/README.MD)
+- [OSM ingest](backend/ingest/osm/README.md)
+- [DB](backend/db/README.md)
+- [Proxy](backend/proxy/README.md)
