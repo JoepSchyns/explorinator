@@ -6,7 +6,7 @@ Explorinator combines hiking routes from multiple major aggregators into a singl
 
 ## Background
 
-I used to be a big fan of [gpsies.com](https://wiki.openstreetmap.org/wiki/Gpsies.com). Gpsies hosted routes from individual contributors, which meant you could see clusters of routes in a given area and plan trips around them. After Gpsies was acquired by Alltrails, I lost that ability. Alltrails is a better service in many ways, but it does not let you see all available routes at once on a map — and neither does any other major aggregator I know of (Komoot, Wikiloc, Outdooractive, etc.).
+I used to be a big fan of [gpsies.com](https://wiki.openstreetmap.org/wiki/Gpsies.com). Gpsies hosted routes from individual contributors, which meant you could see clusters of routes in a given area and plan trips around them. After Gpsies was acquired by Alltrails, I lost that ability. Alltrails is a better service in many ways, but it does not let you see all available routes at once on a map — and neither does any other major aggregators I know of (Komoot, Wikiloc, Outdooractive, etc.).
 
 ## How it works
 
