@@ -2,7 +2,7 @@
 
 # <img src="frontend/public/favicon.svg" alt="Explorinator" width="45"  /> Explorinator
 
-Explorinator combines hiking routes from multiple large aggregators into a single, searchable map.
+Explorinator combines hiking routes from multiple major aggregators into a single, searchable map.
 
 ## Background
 
@@ -10,7 +10,7 @@ I used to be a big fan of [gpsies.com](https://wiki.openstreetmap.org/wiki/Gpsie
 
 ## How it works
 
-Inspired by [waymarkedtrails.org](https://www.waymarkedtrails.org/), I built a web application that renders routes directly on a map. Unlike the large aggregators, routes do not need to be loaded individually. Instead, map tiling is used to load both the base map and the routes for a given area simultaneously, making it possible to see all available routes at once. While Waymarked Trails uses static bitmap tiles, this project uses vector tiles, which enables frontend styling and interactivity.
+Inspired by [waymarkedtrails.org](https://www.waymarkedtrails.org/), I built a web application that renders routes directly on a map. Unlike the major aggregators, routes do not need to be loaded individually. Instead, map tiling is used to load both the base map and the routes for a given area simultaneously, making it possible to see all available routes at once. While Waymarked Trails uses static bitmap tiles, this project uses vector tiles, which enables frontend styling and interactivity.
 
 One of the key features of route aggregators is search. With static tiles this is not feasible, but since the introduction of [Martin](https://martin.maplibre.org/) it is possible to pass query parameters and dynamically fetch vector tiles. This project exposes filters for route length, route type (loop vs. point-to-point), and data source. Users can adjust these filters and watch the map update in real time.
 
@@ -24,7 +24,7 @@ Routes are styled using [MapLibre](https://maplibre.org/) and rendered in the co
 
 ## Reflections
 
-The application has been running well — 140k+ routes from various sources collected across the Netherlands, with filtering fast enough to run on a resource-limited NAS. After using it for a while, though, I think I understand why the large aggregators don't offer an "all routes" view: there can be too many routes in certain areas even after filtering, showing them all clutters the map and can make it hard to find anything actually worth hiking.
+The application has been running well — 140k+ routes from various sources collected across the Netherlands, with filtering fast enough to run on a resource-limited NAS. After using it for a while, though, I think I understand why the major aggregators don't offer an "all routes" view: there can be too many routes in certain areas even after filtering, showing them all clutters the map and can make it hard to find anything actually worth hiking.
 
 This raises an interesting question about curation. Aggregators likely rank by  popularity, which creates a feedback loop where less-discovered routes never surface. I see two ways around this: better filtering, or shifting the model entirely — using routes not as the primary object but as a signal for where good paths exist, and dynamically generating routes from that graph. The latter is almost certainly what Komoot does behind the scenes, judging by their data, and it is the more elegant solution.
 
