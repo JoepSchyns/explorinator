@@ -2,7 +2,7 @@
 
 # <img src="frontend/public/favicon.svg" alt="Explorinator" width="45"  /> Explorinator
 
-Explorinator combines hiking routes from multiple major aggregators into a single, searchable map.
+Explorinator combines hiking routes from multiple major aggregators into a single searchable map.
 
 ## Background
 
