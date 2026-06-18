@@ -24,7 +24,7 @@ Routes are styled using [MapLibre](https://maplibre.org/) and rendered in the co
 
 ## Reflections
 
-The application has been running well. the application has 140k+ routes from various sources collected across the Netherlands, with filtering fast enough to run on a resource-limited NAS. After using it for a while, though, I think I understand why the major aggregators don't offer an "all routes" view: there can be too many routes in certain areas even after filtering, showing them all clutters the map and can make it hard to find anything actually worth hiking.
+The application has been running well. The application has 140k+ routes from various sources collected across the Netherlands, with filtering fast enough to run on a resource-limited NAS. After using it for a while, though, I think I understand why the major aggregators don't offer an "all routes" view: there can be too many routes in certain areas even after filtering, showing them all clutters the map and can make it hard to find anything actually worth hiking.
 
 This raises an interesting question about curation. Aggregators likely rank by  popularity, which creates a feedback loop where less-discovered routes never surface. I see two ways around this: better filtering, or shifting the model entirely. Using routes not as the primary object but as a signal for where good paths exist, and dynamically generating routes from that graph. The latter is almost certainly what Komoot does behind the scenes, judging by their data, and it is the more elegant solution.
 
