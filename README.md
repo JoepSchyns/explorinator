@@ -6,7 +6,7 @@ Explorinator combines hiking routes from multiple major aggregators into a singl
 
 ## Background
 
-I used to be a big fan of [gpsies.com](https://wiki.openstreetmap.org/wiki/Gpsies.com). Gpsies hosted routes from individual contributors, which meant you could see clusters of routes in a given area and plan trips around them. After Gpsies was acquired by Alltrails, I lost that ability. Alltrails is a better service in many ways, but it does not let you see all available routes at once on a map — and neither does any other major aggregators I know of (Komoot, Wikiloc, Outdooractive, etc.).
+I used to be a big fan of [gpsies.com](https://wiki.openstreetmap.org/wiki/Gpsies.com). Gpsies hosted routes from individual contributors, which meant you could see clusters of routes in a given area and plan trips around them. After Gpsies was acquired by Alltrails, I lost that ability. Alltrails is a better service in many ways, but it does not let you see all available routes at once on a map and neither does any other major aggregators I know of (Komoot, Wikiloc, Outdooractive, etc.).
 
 ## How it works
 
@@ -16,17 +16,17 @@ One of the key features of route aggregators is search. With static tiles this i
 
 ## Data
 
-To populate the application, I first wrote an ingestion script for [OpenStreetMap](https://www.openstreetmap.org/), assuming local governments would have uploaded their trails there. Coverage turned out to be uneven — some provinces (in the Netherlands) are well-represented while others contain little useful data *(note to Dutch local governments: please upload your public trails to OSM)*. Because most high-quality route data is locked behind commercial aggregators, I also wrote ingestion scripts for several other sources and was able to collect all their "publicly" accessible data. As this is likely a legal grey area, I am not sharing that code or the data. It is, however, very much possible.
+To populate the application, I first wrote an ingestion script for [OpenStreetMap](https://www.openstreetmap.org/), assuming local governments would have uploaded their trails there. Coverage turned out to be uneven, some provinces (in the Netherlands) are well-represented while others contain little useful data *(note to Dutch local governments: please upload your public trails to OSM)*. Because most high-quality route data is locked behind commercial aggregators, I also wrote ingestion scripts for several other sources and was able to collect all their "publicly" accessible data. As this is likely a legal grey area, I am not sharing that code or the data. It is, however, very much possible.
 
 ## Features
 
-Routes are styled using [MapLibre](https://maplibre.org/) and rendered in the colors defined by their original source. Because styling happens client-side, colors remain consistent across the app and the map stays interactive. Where routes overlap, clicking any point on the map brings up a list of all routes passing through it. Selecting a route from the list opens a detail view with metadata and a direct GPX download — a feature that is frustratingly locked behind a paywall on most major aggregators.
+Routes are styled using [MapLibre](https://maplibre.org/) and rendered in the colors defined by their original source. Because styling happens client-side, colors remain consistent across the app and the map stays interactive. Where routes overlap, clicking any point on the map brings up a list of all routes passing through it. Selecting a route from the list opens a detail view with metadata and a direct GPX download. A feature that is frustratingly locked behind a paywall on most major aggregators.
 
 ## Reflections
 
-The application has been running well — 140k+ routes from various sources collected across the Netherlands, with filtering fast enough to run on a resource-limited NAS. After using it for a while, though, I think I understand why the major aggregators don't offer an "all routes" view: there can be too many routes in certain areas even after filtering, showing them all clutters the map and can make it hard to find anything actually worth hiking.
+The application has been running well. 140k+ routes from various sources collected across the Netherlands, with filtering fast enough to run on a resource-limited NAS. After using it for a while, though, I think I understand why the major aggregators don't offer an "all routes" view: there can be too many routes in certain areas even after filtering, showing them all clutters the map and can make it hard to find anything actually worth hiking.
 
-This raises an interesting question about curation. Aggregators likely rank by  popularity, which creates a feedback loop where less-discovered routes never surface. I see two ways around this: better filtering, or shifting the model entirely — using routes not as the primary object but as a signal for where good paths exist, and dynamically generating routes from that graph. The latter is almost certainly what Komoot does behind the scenes, judging by their data, and it is the more elegant solution.
+This raises an interesting question about curation. Aggregators likely rank by  popularity, which creates a feedback loop where less-discovered routes never surface. I see two ways around this: better filtering, or shifting the model entirely. Using routes not as the primary object but as a signal for where good paths exist, and dynamically generating routes from that graph. The latter is almost certainly what Komoot does behind the scenes, judging by their data, and it is the more elegant solution.
 
 In the future I may play around with clustering and filtering based on terrain type, but for now I am happy to have a working prototype that scratches an itch I have had for years.
 
